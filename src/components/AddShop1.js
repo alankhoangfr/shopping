@@ -102,7 +102,7 @@ class AddShop1 extends Component {
                             markers = {this.markers}
                             />
                         </Col>
-                        <Col sm={6}>
+                        <Col sm={5}>
                             <InfoAreaAddShop
                                 markerSelected  ={this.state.markerSelected}
                                 markersInBound  ={this.state.markersInBound}

@@ -40,7 +40,7 @@ class CompareBasket extends Component {
 						    shopSelected = {this.state.shopSelected}
 							/>
 						</Col>
-						<Col sm={6}>
+						<Col sm={5}>
 							<InfoArea
 								markerSelected	={this.state.markerSelected}
 								markersInBound	={this.state.markersInBound}
