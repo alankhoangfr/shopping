@@ -19,7 +19,7 @@ export class InfoArea extends Component {
 	}
 	onclickMarker = (marker,event) =>{
 		console.log(marker)
-		this.setState({markerHighlighted:marker.photo_id})
+		this.setState({markerHighlighted:marker.id})
 	}
 	onDoubleClick = (marker)=>{
 		this.setState({markerSelected:marker})
@@ -29,13 +29,13 @@ export class InfoArea extends Component {
 	markersInBound = (markers)=>{
 		return markers.map((marker)=>{
 			let active = ""
-			if (marker.photo_id===this.state.markerHighlighted){
+			if (marker.id===this.state.markerHighlighted){
 				active = "success"
 			}
 			return(
 				<ListGroupItem 
 				onClick={this.onclickMarker.bind(this,marker)}  
-				key={marker.photo_id}  
+				key={marker.id}  
 				color={active}
 				onDoubleClick = {this.onDoubleClick.bind(this,marker)}>
 					<ListGroupItemHeading>

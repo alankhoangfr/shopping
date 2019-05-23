@@ -32,12 +32,12 @@ export class MarkerShop extends Component {
 	}
 	onDblClick = (marker,event)=>{	
 		var markerObject = this.props.markers1.filter((mark)=>{
-			return mark.photo_id=== marker
+			return mark.id=== marker
 		})
 		markerObject = markerObject[0]
 		this.props.markerSelected(markerObject)
 		this.setState({
-			markerSelected:markerObject.photo_id,
+			markerSelected:markerObject.id,
 			currentlySelected:true})
 	} 
 	iconBasket = (marker)=>{
@@ -45,10 +45,10 @@ export class MarkerShop extends Component {
 		if(this.props.shopSelected===""||this.state.currentlySelected===true){
 			selected=this.state.markerSelected
 		}else{
-			selected=this.props.shopSelected.photo_id
+			selected=this.props.shopSelected.id
 		}
 		let icon
-		if (selected===marker.photo_id){
+		if (selected===marker.id){
 				icon = basketSelected
 			}else{
 				icon = basket
@@ -61,10 +61,10 @@ export class MarkerShop extends Component {
 			this.props.markers1.map((marker) => {				
 			return( 
 				<Marker
-						key={marker.photo_id}
+						key={marker.id}
 						position={{ lat: marker.lat, lng: marker.lng }}
 						icon ={this.iconBasket(marker)}
-						onDblClick = {this.onDblClick.bind(this,marker.photo_id)}
+						onDblClick = {this.onDblClick.bind(this,marker.id)}
 						animation={window.google.maps.Animation.DROP}
 				>
 

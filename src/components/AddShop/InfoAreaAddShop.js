@@ -26,18 +26,18 @@ export class InfoAreaAddShop extends Component {
 		}if (this.props.markers!==prevProps.markers){
 			this.setState({
 				markerSelected:"",
-				markerHighlighted:this.props.markerSelected.photo_id
+				markerHighlighted:this.props.markerSelected.id
 			})
 		}if(this.props.markerHighlighted!==prevProps.markerHighlighted){
 			this.setState({
 				markerSelected:"",
-				markerHighlighted:this.props.markerHighlighted.photo_id
+				markerHighlighted:this.props.markerHighlighted.id
 			})
 		}
 	}
 	onclickMarker = (marker,event) =>{
 		console.log(marker)
-		this.setState({markerHighlighted:marker.photo_id})
+		this.setState({markerHighlighted:marker.id})
 	}
 	onDoubleClick = (markerObject)=>{
 		this.setState({markerSelected:markerObject})
@@ -46,14 +46,15 @@ export class InfoAreaAddShop extends Component {
 	}
 	markersInBound = (markers)=>{
 		return markers.map((marker)=>{
+			console.log(marker.id,this.state.markerHighlighted)
 			let active = ""
-			if (marker.photo_id===this.state.markerHighlighted){
+			if (marker.id===this.state.markerHighlighted){
 				active = "success"
 			}
 			return(
 				<ListGroupItem 
 				onClick={this.onclickMarker.bind(this,marker)}  
-				key={marker.photo_id}  
+				key={marker.id}  
 				color={active}
 				onDoubleClick = {this.onDoubleClick.bind(this,marker)}>
 					<ListGroupItemHeading>

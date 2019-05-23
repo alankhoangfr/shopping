@@ -57,7 +57,6 @@ export class MapAddShop extends Component {
 				moving:false,
 				input:false,
 				maploading:false,
-
 			})
 		}else{
 			markers1 = this.insideBound(this.props.item.markers,this.state.movePosition)
@@ -66,10 +65,9 @@ export class MapAddShop extends Component {
 				moving:false,
 				input:false,
 				maploading:false,
-
 			})		
 		}
-		}
+	}
 	shouldComponentUpdate( nextProps, nextState ){	
 		console.log("should Componeent update", nextState, this.state,nextProps,this.props)
 		if (this.check_markers1(nextState.markers1,this.state.markers1)===false){
@@ -205,10 +203,10 @@ export class MapAddShop extends Component {
 		var arr1 = []
 		var arr2 = []
 		array1.map((elem)=>{
-			arr1.push(elem.photo_id)
+			arr1.push(elem.id	)
 		})
 		array2.map((elem)=>{
-			arr2.push(elem.photo_id)
+			arr2.push(elem.id	)
 		})
 		if (arr1.sort().toString()==arr2.sort().toString()){	
 			return true
@@ -322,7 +320,7 @@ export class MapAddShop extends Component {
 		if (center!=null&&shops!=null){
 			var result = []
 			shops.map((shop)=>{
-				if (shop.lat>center.lat-0.2 && shop.lat<center.lat+0.2 && shop.lng>center.lng-0.2 && shop.lng<center.lng+0.2){
+				if (shop.lat>center.lat-0.3 && shop.lat<center.lat+0.3 && shop.lng>center.lng-0.3 && shop.lng<center.lng+0.3){
 					result.push(shop)}	
 			})
 			console.log(result,"lets look center",center,shops)	

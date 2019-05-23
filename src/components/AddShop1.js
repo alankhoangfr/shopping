@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Container, Row,Col } from 'reactstrap';
+import { Container, Row,Col,Alert  } from 'reactstrap';
 import InfoShop from "./AddShop/InfoShop"
 import InfoAreaAddShop from "./AddShop/InfoAreaAddShop"
 import MapAddShop from "./AddShop/MapAddShop"
@@ -19,8 +19,22 @@ class AddShop1 extends Component {
             lat:-33.865143,
                 lng: 151.209900
             },
-        markers:[]
+        markers:[],
+        visible: false,
+        visibleDetails: false,
     }
+    onDismiss= () =>{
+    this.setState({ visible: false });
+      }
+    openAlert= () =>{
+    this.setState({ visible: true });
+      }
+    onDismissDetails= () =>{
+    this.setState({ visibleDetails: false });
+      }
+    openAlertDetails= () =>{
+    this.setState({ visibleDetails: true });
+      }
     markerSelected=(markerObject)=>{
       this.setState({markerSelected:markerObject})  }
     markersInBound = (markers)=>{
@@ -36,11 +50,10 @@ class AddShop1 extends Component {
         console.log("new info added")
     this.setState({
         markerInfo:newMarkerObject,
-        shopSelected:newMarkerObject,
-        markerSelected:newMarkerObject,
+
     })
     }
-    markerInfoFromAddress          = (newMarkerObject)=>{
+    markerInfoFromAddress = (newMarkerObject)=>{
         console.log("new info added")
     this.setState({
         markerInfo:newMarkerObject,
@@ -61,6 +74,12 @@ class AddShop1 extends Component {
       console.log(this.state,"AddShop1")
           return (
                <div>
+                <Alert color="danger" isOpen={this.state.visible} toggle={this.onDismiss}>
+                    You already have added a supermaket with the same address and name!
+                </Alert>
+                <Alert color="danger" isOpen={this.state.visibleDetails} toggle={this.onDismissDetails}>
+                    Please enter the details correctly
+                </Alert>
                 <Container>
                     <div className="title">
                         <h1>
@@ -76,13 +95,11 @@ class AddShop1 extends Component {
                             zoom={8}
                             markerSelected = {this.markerSelected}
                             markersInBound = {this.markersInBound}
-                            shopSelected = {this.state.shopSelected}
-                            markerHighlighted={this.state.markerHighlighted}
+                            shopSelected = {this.state.shopSelected}      
                             markerInfoMap={this.markerInfoMap}
                             mapCoord = {this.mapPosition}
                             markCoord = {this.markerPosition}
                             markers = {this.markers}
-                            
                             />
                         </Col>
                         <Col sm={6}>
@@ -91,18 +108,29 @@ class AddShop1 extends Component {
                                 markersInBound  ={this.state.markersInBound}
                                 shopSelected = {this.shopSelected}
                                 markers ={this.state.markers}
+                                markerHighlighted={this.state.markerHighlighted}
                             />
                         </Col>
                     </Row>
                     <Row>
-                        <InfoShop
+                        <div className="title" style={{marginTop:"30px"}}>
+                            <h1>
+                                Enter the Details or move the Marker
+                            </h1>  
+                        </div>
+                        <Col sm={12}>
+                            <InfoShop
                                 markerPosition={this.markerPosition}
                                 markerInfo = {this.state.markerInfo}
                                 mapPosition ={this.mapPosition}
-                                markerInfoFromAddress = {this.markerInfoFromAddress}
+                                markerInfoFromAddress = {this.markerInfoFromAddress}  
+                                openAlert = {this.openAlert}  
+                                openAlertDetails = {this.openAlertDetails} 
                                 />
+                        </Col>
                     </Row>
                 </Container>
+
             </div>
 
 

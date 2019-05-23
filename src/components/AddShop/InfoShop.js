@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import { Col, Row, Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import {connect} from "react-redux"
-import {addItem} from "../../actions/itemActions"
+import {addItem,getItems} from "../../actions/itemActions"
 import PropTypes from "prop-types"
 import Geocode from "react-geocode";
 import uuid from "uuid"
@@ -19,7 +19,12 @@ class InfoShop extends Component{
 			postcode:"",
 			completeAddress	:"",
 			markerPresent:false,
+
 		}
+	}
+	componentDidMount(){
+		console.log("componentDidMount")
+		this.props.getItems()
 	}
 	shouldComponentUpdate(nextProps,nextState){
 		console.log("shouldComponentUpdate",nextProps,nextState)
@@ -45,14 +50,22 @@ class InfoShop extends Component{
 			})
 		}
 	}
+
 	onChange = ( event ) => {
   		this.setState({ [event.target.name]: event.target.value });
  	};
  	onSubmit = (event)=>{	
  		event.preventDefault()
  		const address = this.state.address +" "+ this.state.city  +" "+ this.state.state  +" "+  this.state.postcode
- 		console.log(address)
- 		Geocode.fromAddress(address).then(
+ 		const match = this.props.item.markers.map((marker)=>{
+ 			let result 
+ 			marker.completeAddress===address&&marker.name===this.state.name?result=true:result=false
+ 			return result
+ 		})
+ 		let regexp = /(undefined)/g
+ 		const reg=this.state.address.search(regexp)
+ 		if(match.every((mark)=>{return mark===false})===true&&reg===-1){
+ 			Geocode.fromAddress(address).then(
 				response => {
     			const { lat, lng } = response.results[0].geometry.location
     			this.props.markerPosition({lat:lat,lng:lng})
@@ -63,17 +76,30 @@ class InfoShop extends Component{
     				lat:lat,
     				lng:lng,
     				name:this.state.name,
-    				address:address,
+    				address:this.state.address,
     				score:"",
     				details:"",
+    				city: this.state.city,
+					state: this.state.state,
+					postcode:this.state.postcode,
+					completeAddress	:address,
     			}
     			this.props.addItem(newMarker)
     			this.props.markerInfoFromAddress(newMarker)}
     			 )
+ 		}else if (match.every((mark)=>{return mark===false})===false){ 
+ 			this.props.openAlert()
+ 			return null
+ 		}else if (reg>=0){
+ 			this.props.openAlertDetails()
+ 			return null
+ 		}
+ 		
  	}
 	render(){
 		console.log(this.state)
 		return(
+
 		<Form onSubmit={this.onSubmit} style={{marginTop:"20px"}} >
 			<Row form>
 				<Col md={12}>
@@ -111,6 +137,8 @@ class InfoShop extends Component{
 			</Row>
 			<Button>Add Supermarket</Button>
 		</Form>
+
+
 		)
 	}
 }
@@ -119,6 +147,7 @@ class InfoShop extends Component{
 
 InfoShop.propTypes = {
 	addItem:PropTypes.func.isRequired,
+	getItems:PropTypes.func.isRequired,
 	item:PropTypes.object.isRequired
 }
 
@@ -126,4 +155,5 @@ const mapStateToProps = (state)=>({
 	item:state.item
 })
 
-export default connect(mapStateToProps,{addItem})(InfoShop)
+export default connect(mapStateToProps,{getItems,addItem})(InfoShop)
+

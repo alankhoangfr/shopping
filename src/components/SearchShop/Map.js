@@ -97,10 +97,10 @@ export class Map extends Component {
 		var arr1 = []
 		var arr2 = []
 		array1.map((elem)=>{
-			arr1.push(elem.photo_id)
+			arr1.push(elem.id)
 		})
 		array2.map((elem)=>{
-			arr2.push(elem.photo_id)
+			arr2.push(elem.id)
 		})
 		if (arr1.sort().toString()==arr2.sort().toString()){	
 			return true
