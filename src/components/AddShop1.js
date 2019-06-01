@@ -59,6 +59,10 @@ class AddShop1 extends Component {
         markerInfo:newMarkerObject,
         shopSelected:newMarkerObject,
         markerHighlighted:newMarkerObject,
+        mapPosition:{
+            lat:newMarkerObject.lat,
+            lng:newMarkerObject.lng
+            },
     })
     }
     mapPosition  = (center)=>{
@@ -90,9 +94,10 @@ class AddShop1 extends Component {
                     <Row>
                         <Col sm={6}>
                               <MapAddShop
-                            center={{lat: -33.78, lng: 151.2}}
+                            center={{lat: this.state.mapPosition.lat, lng: this.state.mapPosition.lng}}
                             height='500px'
                             zoom={8}
+                            markerInfo = {this.state.markerInfo}
                             markerSelected = {this.markerSelected}
                             markersInBound = {this.markersInBound}
                             shopSelected = {this.state.shopSelected}      
@@ -102,7 +107,7 @@ class AddShop1 extends Component {
                             markers = {this.markers}
                             />
                         </Col>
-                        <Col sm={5}>
+                        <Col sm={6}>
                             <InfoAreaAddShop
                                 markerSelected  ={this.state.markerSelected}
                                 markersInBound  ={this.state.markersInBound}

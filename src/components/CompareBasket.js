@@ -1,63 +1,88 @@
-import React, {Component} from 'react';
-import { Container, Row,Col } from 'reactstrap';
-import InfoArea from "./SearchShop/InfoArea"
-import Map from "./SearchShop/Map"
+import React, {Component} from "react"
+import SearchShop from "./SearchShop"
+import ItemDisplay from "./Compare/ItemDisplay"
+import {CardText,Table,CardTitle,CardSubtitle,Card,Container, Row,Col,CardImg,CardBody} from 'reactstrap';
+import CBasket from "../image/CBasket.png"
+import CardShops from "./Compare/CardShops"
+import Basket from "./Compare/Basket"
 
-class CompareBasket extends Component {
-	state ={
-		markerSelected :"",
-		markersInBound:[],
-		shopSelected:"",
+export class CompareBasket extends Component{
+	constructor(props){
+		super(props)
+		this.state={
+			supermarket_selected:"",
+			basket:[],
+			itemOnDrag:"",
+			shopSelectedCompare:"",	
+			allSpace:true,
+			space:[]
+		}
 	}
-  markerSelected=(marker)=>{
-  	this.setState({markerSelected:marker})  }
-  markersInBound = (markers)=>{
-  	this.setState({markersInBound:markers})
-  }
-  shopSelected = (markers)=>{
-  	this.setState({shopSelected:markers})
-  }
-  render(){
+	shouldComponentUpdate(nextState,nextProps){
+		if(this.props.allSpace!==nextProps.allSpace){
+			return true
+		}
+	}
+	itemOnDrag=(result)=>{
+		this.setState({itemOnDrag:result})
+	}
+	basket = (basket)=>{
+		this.setState({basket:basket})
+	}
+	supermarket_selected=(markerObject)=>{
+		this.setState({supermarket_selected:markerObject})
+	}
+	shopSelectedCompare=(markerObject)=>{
+		console.log("good")
+		this.setState({shopSelectedCompare:markerObject})
+	}
 
-  	console.log(this.state,"CompareBasket")
-  		return (
-   			<div>
-			    <Container>
-			    	<div className="title">
-						<h1>
-							Search for the Supermarkets near you
-						</h1>
-							
-					</div>
-			    	<Row>
-			    		<Col sm={6}>
-					      	<Map
-						    center={{lat: -33.78, lng: 151.2}}
-						    height='500px'
-						    zoom={8}
-						    markerSelected = {this.markerSelected}
-						    markersInBound = {this.markersInBound}
-						    shopSelected = {this.state.shopSelected}
-							/>
-						</Col>
-						<Col sm={5}>
-							<InfoArea
-								markerSelected	={this.state.markerSelected}
-								markersInBound	={this.state.markersInBound}
-								shopSelected = {this.shopSelected}
-							/>
-						</Col>
+	allSpace=(allSpace)=>{
+		this.setState({
+			allSpace:allSpace.nonVisible,
+			space:allSpace.space
+		})
+	}
+	cancelCardSpace=()=>{
+		this.setState({shopSelectedCompare:""})
+	}
+	render(){
+		console.log(this.state)
+		let shopSelected = 
+			<ItemDisplay
+				supermarket_selected={this.state.supermarket_selected}
+				itemOnDrag={this.itemOnDrag}
+				basket={this.basket}
+				space={this.state.space}
+			/>
+		if(this.state.allSpace===true){shopSelected=null}
+		return (
+			<React.Fragment>
+				<SearchShop
+					supermarket_selected={this.supermarket_selected}
+					fromAddItem = {true}
+					compareBasket={true}
+					shopSelectedCompare={this.shopSelectedCompare}
+					/>
+				<Container style={{marginTop:"50px"}}>
+					<Row>
+						<Col sm={3}  style={{zIndex:"1"}}>
+							<Basket
+								itemOnDrag={this.state.itemOnDrag}
+								basket={this.basket}/>
+							{shopSelected}
+						</Col>		
+					<CardShops
+						shopSelectedCompare={this.state.shopSelectedCompare}
+						allSpace={this.allSpace}
+						basket={this.state.basket}
+						cancelCardSpace={this.cancelCardSpace}/>
 					</Row>
-			    </Container>
-			</div>
-
-	
-
-  );
-  }
-
+				</Container>
+			</React.Fragment>
+			)
+	}
 }
 
-export default CompareBasket;
-
+export default CompareBasket
 

@@ -43,7 +43,7 @@ class AppNavBar extends Component {
 	                  	<NavLink tag={RRNavLink} exact to="/AddShops" activeClassName="active">Add Shops</NavLink>
 	                  </DropdownItem>
 	                  <DropdownItem>
-	                    Add Items
+	                    <NavLink tag={RRNavLink} exact to="/AddItems" activeClassName="active">Add Items</NavLink>
 	                  </DropdownItem>
 	                </DropdownMenu>
 	              </UncontrolledDropdown>

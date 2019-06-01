@@ -1,6 +1,6 @@
 import React, {Component} from "react"
 import { ListGroup, ListGroupItem,ListGroupItemText,ListGroupItemHeading} from 'reactstrap';
-
+import add from "../../image/add.png"
 
 export class InfoArea extends Component {
 	constructor(props){
@@ -17,54 +17,60 @@ export class InfoArea extends Component {
 				markerHighlighted:""})
 		}
 	}
-	onclickMarker = (marker,event) =>{
-		console.log(marker)
-		this.setState({markerHighlighted:marker.id})
+	onclickMarker = (markerObject,event) =>{
+		console.log(markerObject)
+		this.setState({markerHighlighted:markerObject.id})
 	}
-	onDoubleClick = (marker)=>{
-		this.setState({markerSelected:marker})
-		this.props.shopSelected(marker)
+	onDoubleClick = (markerObject)=>{
+		this.setState({markerSelected:markerObject})
+		this.props.shopSelected(markerObject)
 
 	}
+	onClickAdd=(markerObject,event)=>{
+		this.props.shopSelectedCompare(markerObject	)
+		console.log("click add")
+	}
 	markersInBound = (markers)=>{
-		return markers.map((marker)=>{
+		return markers.map((markerObject)=>{
 			let active = ""
-			if (marker.id===this.state.markerHighlighted){
+			if (markerObject.id===this.state.markerHighlighted){
 				active = "success"
 			}
 			return(
 				<ListGroupItem 
-				onClick={this.onclickMarker.bind(this,marker)}  
-				key={marker.id}  
+				onClick={this.onclickMarker.bind(this,markerObject)}  
+				key={markerObject.id}  
 				color={active}
-				onDoubleClick = {this.onDoubleClick.bind(this,marker)}>
+				onDoubleClick = {this.onDoubleClick.bind(this,markerObject)}>
 					<ListGroupItemHeading>
-						{marker.name}
+						{markerObject.name}
 					</ListGroupItemHeading>
 					<ListGroupItemText>
-						{marker.address}
+						{markerObject.address}
+						{this.props.compareBasket===true?<img src={add} onClick={this.onClickAdd.bind(this,markerObject)} align="right"/>:null}
 					</ListGroupItemText>
 					<ListGroupItemText>
-						{marker.score}
+						{markerObject.score}
 					</ListGroupItemText>
 				</ListGroupItem>
 				)
 		})
 	}
-	focusOnMarker = (marker)=>{
+	focusOnMarker = (markerObject)=>{
 		return(
 			<ListGroupItem >
 				<ListGroupItemHeading>
-					{marker.name}
+					{markerObject.name}
 				</ListGroupItemHeading>
 				<ListGroupItemText>
-					{marker.address}
+					{markerObject.address}
+					{this.props.compareBasket===true?<img src={add} align="right" onClick={this.onClickAdd.bind(this,markerObject)}/>:null}
 				</ListGroupItemText>
 				<ListGroupItemText>
-					{marker.score}
+					{markerObject.score}
 				</ListGroupItemText>
 				<ListGroupItemText>
-					{marker.details}
+					{markerObject.details}
 				</ListGroupItemText>
 			</ListGroupItem>
 

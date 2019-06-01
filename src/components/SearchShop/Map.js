@@ -4,7 +4,7 @@ import Geocode from "react-geocode"
 import Autocomplete from 'react-google-autocomplete';
 import uuid from "uuid"
 import {connect} from "react-redux"
-import {getItems} from "../../actions/itemActions"
+import {getSuperMarkets} from "../../actions/SuperMarketActions"
 import MarkerShop from "./MarkerShop"
 import PropTypes from "prop-types"
 
@@ -39,14 +39,14 @@ export class Map extends Component {
 	}
 	componentDidMount(){
 		console.log("componentDidMount")
-		this.props.getItems()
+		this.props.getSuperMarkets()
 		this.updating_marker()
 
 	}
 	updating_marker = ()=>{
 		console.log("updating marker>")
 		if (this.state.moving===true){
-			var markers1 = this.insideBound_bound(this.props.item.markers,this.state.bound)
+			var markers1 = this.insideBound_bound(this.props.superMarket.markers,this.state.bound)
 			this.setState({
 				markers1:markers1,
 				moving:false,
@@ -55,7 +55,7 @@ export class Map extends Component {
 
 			})
 		}else{
-			markers1 = this.insideBound(this.props.item.markers,this.state.movePosition)
+			markers1 = this.insideBound(this.props.superMarket.markers,this.state.movePosition)
 			this.setState({
 				markers1:markers1,
 				moving:false,
@@ -114,7 +114,7 @@ export class Map extends Component {
 				response => {
     			const { lat, lng } = response.results[0].geometry.location
     			console.log(lat, lng)
-    			var markers1 = this.insideBound(this.props.item.markers,response.results[0].geometry.location)
+    			var markers1 = this.insideBound(this.props.superMarket.markers,response.results[0].geometry.location)
     			if (lat ===undefined){
     				return null
     			}
@@ -142,7 +142,7 @@ export class Map extends Component {
 			const name = place.formatted_name,
 			latValue = place.geometry.location.lat(),
 			lngValue = place.geometry.location.lng();
-			var markers1 = this.insideBound(this.props.item.markers,place.geometry.location)
+			var markers1 = this.insideBound(this.props.superMarket.markers,place.geometry.location)
 			// Set these values in the state.
 			this.setState({
 				mapPosition: {
@@ -168,9 +168,9 @@ export class Map extends Component {
 	};
 	mapmoved=()=>{
 		console.log("mapMoved:"+JSON.stringify(this.state.map.getBounds()))
-		var markers1 = this.insideBound_bound(this.props.item.markers,this.state.map.getBounds())
+		var markers1 = this.insideBound_bound(this.props.superMarket.markers,JSON.stringify(this.state.map.getBounds()))
 		this.setState({
-			bound:this.state.map.getBounds(),
+			bound:JSON.stringify(this.state.map.getBounds()),
 			movePosition: {
 				lat: this.state.map.getCenter().lat(),
 				lng: this.state.map.getCenter().lng()
@@ -194,9 +194,9 @@ export class Map extends Component {
 	}
 	onZoom = ()=>{
 		console.log("zoom:"+this.state.map.getCenter(),this.state.map.getZoom())
-		var markers1 = this.insideBound_bound(this.props.item.markers,this.state.map.getBounds())
+		var markers1 = this.insideBound_bound(this.props.superMarket.markers,JSON.stringify(this.state.map.getBounds()))
 		this.setState({
-			bound:this.state.map.getBounds(),
+			bound:JSON.stringify(this.state.map.getBounds()),
 			movePosition: {
 				lat: this.state.map.getCenter().lat(),
 				lng: this.state.map.getCenter().lng()
@@ -224,9 +224,10 @@ export class Map extends Component {
 	}
 	insideBound_bound = (shops,bound)=>{
 		if (bound!=null&&shops!=null){
+			bound = JSON.parse(bound)
 			var result = []	
 			shops.map((shop)=>{
-				if (shop.lat>bound.na.j && shop.lat<bound.na.l && shop.lng>bound.ia.j && shop.lng<bound.ia.l){
+				if (shop.lat>bound.south && shop.lat<bound.north && shop.lng>bound.west && shop.lng<bound.east){
 					result.push(shop)}	
 			})
 			console.log(result,"lets look bound",bound,shops)		
@@ -234,8 +235,8 @@ export class Map extends Component {
 			return result			
 		}else{return []}
 	}
-	markerSelected =(shop)=>{
-		this.props.markerSelected(shop)
+	markerSelected =(markerObject)=>{
+		this.props.markerSelected(markerObject)
 	}
 	
 	render() {
@@ -303,12 +304,12 @@ export class Map extends Component {
 }
 
 Map.propTypes = {
-	getItems:PropTypes.func.isRequired,
-	item:PropTypes.object.isRequired
+	getSuperMarkets:PropTypes.func.isRequired,
+	superMarket:PropTypes.object.isRequired
 }
 
 const mapStateToProps = (state)=>({
-	item:state.item
+	superMarket:state.superMarket
 })
 
-export default connect(mapStateToProps,{getItems})(Map)
+export default connect(mapStateToProps,{getSuperMarkets})(Map)

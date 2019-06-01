@@ -1,3 +1,7 @@
+export const GET_SUPERMARKETS = 'GET_SUPERMARKETS';
+export const ADD_SUPERMARKET = 'ADD_SUPERMARKET';
+export const DELETE_SUPERMARKET = 'DELETE_SUPERMARKET';
 export const GET_ITEMS = 'GET_ITEMS';
-export const ADD_ITEM = 'ADD_ITEM';
+export const ADD_ITEMTOSHOP = 'ADD_ITEMTOSHOP';
 export const DELETE_ITEM = 'DELETE_ITEM';
+export const PUT_PRICE = "PUT_PRICE"

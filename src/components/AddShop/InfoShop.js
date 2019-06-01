@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import { Col, Row, Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import {connect} from "react-redux"
-import {addItem,getItems} from "../../actions/itemActions"
+import {addSuperMarket,getSuperMarkets} from "../../actions/SuperMarketActions"
 import PropTypes from "prop-types"
 import Geocode from "react-geocode";
 import uuid from "uuid"
@@ -24,7 +24,7 @@ class InfoShop extends Component{
 	}
 	componentDidMount(){
 		console.log("componentDidMount")
-		this.props.getItems()
+		this.props.getSuperMarkets()
 	}
 	shouldComponentUpdate(nextProps,nextState){
 		console.log("shouldComponentUpdate",nextProps,nextState)
@@ -57,7 +57,7 @@ class InfoShop extends Component{
  	onSubmit = (event)=>{	
  		event.preventDefault()
  		const address = this.state.address +" "+ this.state.city  +" "+ this.state.state  +" "+  this.state.postcode
- 		const match = this.props.item.markers.map((marker)=>{
+ 		const match = this.props.superMarket.markers.map((marker)=>{
  			let result 
  			marker.completeAddress===address&&marker.name===this.state.name?result=true:result=false
  			return result
@@ -84,7 +84,7 @@ class InfoShop extends Component{
 					postcode:this.state.postcode,
 					completeAddress	:address,
     			}
-    			this.props.addItem(newMarker)
+    			this.props.addSuperMarket(newMarker)
     			this.props.markerInfoFromAddress(newMarker)}
     			 )
  		}else if (match.every((mark)=>{return mark===false})===false){ 
@@ -146,14 +146,14 @@ class InfoShop extends Component{
 
 
 InfoShop.propTypes = {
-	addItem:PropTypes.func.isRequired,
-	getItems:PropTypes.func.isRequired,
-	item:PropTypes.object.isRequired
+	addSuperMarket:PropTypes.func.isRequired,
+	getSuperMarkets:PropTypes.func.isRequired,
+	superMarket:PropTypes.object.isRequired
 }
 
 const mapStateToProps = (state)=>({
-	item:state.item
+	superMarket:state.superMarket
 })
 
-export default connect(mapStateToProps,{getItems,addItem})(InfoShop)
+export default connect(mapStateToProps,{getSuperMarkets,addSuperMarket})(InfoShop)
 

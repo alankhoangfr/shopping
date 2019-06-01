@@ -1,9 +1,9 @@
     
 import { combineReducers } from 'redux';
-import itemReducers from './itemReducers';
-
+import SuperMarketReducers from './SuperMarketReducers';
+import ItemReducers from "./ItemReducers"
 
 export default combineReducers({
-  item: itemReducers,
-
+  superMarket: SuperMarketReducers,
+  item:ItemReducers
 });

@@ -2,11 +2,16 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://alankhoangfr.github.io/shopping",
+  "homepage": "https://alankhoangfr.github.io/shopping/",
   "dependencies": {
     "axios": "^0.18.0",
     "bootstrap": "^4.3.1",
+    "cleave.js": "^1.5.0",
+    "csv": "^5.1.1",
+    "gh-pages": "^2.0.1",
     "google-maps-react": "^2.0.2",
+    "lodash": "^4.17.11",
+    "moment": "^2.24.0",
     "react": "^16.8.6",
     "react-bootstrap": "^1.0.0-beta.8",
     "react-dom": "^16.8.6",
@@ -17,10 +22,13 @@
     "react-router-dom": "^5.0.0",
     "react-scripts": "3.0.0",
     "react-search-box": "^2.0.1",
+    "react-toolbox": "^2.0.0-beta.13",
     "react-transition-group": "^4.0.0",
     "reactstrap": "^8.0.0",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^0.87.1",
     "uuid": "^3.3.2"
   },
   "scripts": {
@@ -31,6 +39,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
+  "proxy": "http://localhost:5000",
   "eslintConfig": {
     "extends": "react-app"
   },
@@ -47,6 +56,6 @@
     ]
   },
   "devDependencies": {
-    "gh-pages": "^2.0.1"
+    "postcss-loader": "^3.0.0"
   }
 }
