@@ -3,7 +3,9 @@ import { Card, CardImg, CardText, CardBody, CardLink,
   CardTitle, CardSubtitle,Form, FormGroup, Label, Input,Col,Button } from 'reactstrap';
 import SearchBoxCompare from "./SearchBoxCompare"
 import grocery_sampleJSON from "../../Data/grocery_sampleJSON.json"
-
+import {getSuperMarkets,deleteItemFromBasket,addItemToBasket} from "../../actions/SuperMarketActions"
+import {connect} from "react-redux"
+import PropTypes from "prop-types"
 
 
 export class ItemDisplay extends React.Component {
@@ -12,11 +14,13 @@ export class ItemDisplay extends React.Component {
         this.state={
              result:"",
              quantity:"",
-             basket:[],
              emptySearchBox:false,
              space:[],
          }
      }
+    componentDidMount(){
+        this.props.getSuperMarkets()
+    }
     shouldComponentUpdate(nextState,nextProps){
         console.log(nextState,nextProps,"ItemDisplay should component update")
          if(this.state.result!==nextState.result){
@@ -59,11 +63,13 @@ export class ItemDisplay extends React.Component {
             quantity:this.state.quantity
         }
         this.setState({
-            basket:[...this.state.basket,info],
             quantity:"",
             result:"",
             emptySearchBox:true})
-        this.props.basket([...this.state.basket,info])
+        this.props.addItemToBasket(info)
+    }
+    notEmptySearchBox=()=>{
+        this.setState({emptySearchBox:false})
     }
     render() {
     	const {result,price}=this.state
@@ -109,6 +115,7 @@ export class ItemDisplay extends React.Component {
             	result = {this.result}
             	supermarket_selected={this.props.supermarket_selected}
                 emptySearchBox={this.state.emptySearchBox}
+                notEmptySearchBox={this.notEmptySearchBox}
                 space={this.state.space}/>
         	{card}
     	</div>
@@ -118,4 +125,15 @@ export class ItemDisplay extends React.Component {
 }
 
 
-export default ItemDisplay
+ItemDisplay.propTypes = {
+    getSuperMarkets:PropTypes.func.isRequired,
+    superMarket:PropTypes.object.isRequired,
+    deleteItemFromBasket:PropTypes.func.isRequired,
+    addItemToBasket:PropTypes.func.isRequired,
+}
+const mapStateToProps = (state)=>({
+    superMarket:state.superMarket
+})
+
+export default connect(mapStateToProps,{getSuperMarkets,deleteItemFromBasket,addItemToBasket}) (ItemDisplay)
+

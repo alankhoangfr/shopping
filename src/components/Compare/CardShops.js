@@ -1,6 +1,6 @@
 import React, {Component} from "react"
 import {CardText,Table,CardTitle,CardSubtitle,Card,Container, Row,Col,CardImg,CardBody,Alert, Modal, ModalHeader, ModalBody, ModalFooter,Button } from 'reactstrap';
-import {getSuperMarkets} from "../../actions/SuperMarketActions"
+import {getSuperMarkets,deleteItemFromBasket,addItemToBasket} from "../../actions/SuperMarketActions"
 import {connect} from "react-redux"
 import PropTypes from "prop-types"
 import cancel from "../../image/cancel.png"
@@ -12,9 +12,10 @@ export class CardShops extends Component{
 			space1:"",
 			space2:"",
 			space3:"",
-			basket:[],
 			itemOnDrag:"",
 			modal: false,
+			modalAdd:false,
+			notInShop:[],
 			
 		}
 	}
@@ -26,12 +27,12 @@ export class CardShops extends Component{
 		const {space1,space2,space3} = this.state
 		const spaces =[space1,space2,space3]
 		const nspaces =[nspace1,nspace2,nspace3]
-		console.log("cardshop",nextProps)
+		console.log("cardshop ShouldComponentUpdate",nextProps)
 		if(this.props.shopSelectedCompare!==nextProps.shopSelectedCompare){
 			return true
-		}if(this.props.basket!==nextProps.basket){
-			return true
 		}if(nspaces!==spaces){
+			return true
+		}if(this.props.superMarket.basket!==nextProps.superMarket.basket){
 			return true
 		}
 	}
@@ -49,9 +50,6 @@ export class CardShops extends Component{
 		if(this.props.shopSelectedCompare!==prevProps.shopSelectedCompare){
 			this.shopSelectedCompare(this.props.shopSelectedCompare)
 			
-		}if (this.props.basket!==prevProps.basket){
-			console.log("cardShop",this.state,this.props)
-			this.setState({basket:this.props.basket})
 		}if(pspaces!==spaces){
 			if(numberOfNon.length===0){
 				this.props.allSpace({nonVisible:true,space:numberOfNon})
@@ -61,23 +59,66 @@ export class CardShops extends Component{
 		}
 	}
 	shopSelectedCompare=(markerObject)=>{
-		console.log(this.props.superMarket[markerObject.id],"shopSelectedCompare",this.state,this.props	)
 		const {space1,space2,space3} = this.state
+		const basket = this.props.superMarket.basket
 		if (space1===""&&space2===""&&space3===""){
 			this.setState({space1:this.props.superMarket[markerObject.id]})
 		}else if(space2===""&&space3===""){
 			if(space1.id!==markerObject.id){
-				this.setState({space2:this.props.superMarket[markerObject.id]})
+				if(basket.length===0){
+					this.setState({space2:this.props.superMarket[markerObject.id]})
+				}else{
+					var count = 0
+					var notInShop=[]
+					var itemInShop = Object.keys(this.props.superMarket[markerObject.id].item)
+					for(var i =0;i<basket.length;i++){
+						var itemInBasket = basket[i]
+						console.log(itemInBasket)
+						if(itemInShop.indexOf(itemInBasket.item_id)>=0)
+							{count++}
+						else if(itemInShop.indexOf(itemInBasket.item_id)===-1)
+							{notInShop.push(itemInBasket.title)}
+					}if(count!==basket.length){
+						console.log("modalAdd",count,basket,itemInShop)
+						console.log(notInShop)
+						this.setState({
+							modalAdd:true,
+							notInShop:notInShop})
+					}else{
+						this.setState({space2:this.props.superMarket[markerObject.id]})
+					}
+				}
 			}
 		}else if(space3===""){
 			const insideTheSpace = [space1.id,space2.id]
-			console.log(insideTheSpace,insideTheSpace.indexOf(markerObject.id))
 			if (insideTheSpace.indexOf(markerObject.id)===-1){
-				this.setState({space3:this.props.superMarket[markerObject.id]})
+				if(basket.length===0){
+					this.setState({space3:this.props.superMarket[markerObject.id]})
+				}else{
+					var count = 0
+					var notInShop=[]
+					var itemInShop = Object.keys(this.props.superMarket[markerObject.id].item)
+					for(var i =0;i<basket.length;i++){
+						var itemInBasket = basket[i]
+						console.log(itemInBasket)
+						if(itemInShop.indexOf(itemInBasket.item_id)>=0)
+							{count++}
+						else if(itemInShop.indexOf(itemInBasket.item_id)===-1)
+							{notInShop.push(itemInBasket.title)}
+					}if(count!==basket.length){
+						console.log("modalAdd",count,basket,itemInShop)
+						console.log(notInShop)
+						this.setState({
+							modalAdd:true,
+							notInShop:notInShop})
+					}else{
+						this.setState({space3:this.props.superMarket[markerObject.id]})
+					}
+				}
 			}		
-		}else{
-			this.setState({modal:true})
-		}
+			}else{
+				this.setState({modal:true})
+		    }
 	}
 	cancel=(event)=>{
 		const {space1,space2,space3} = this.state
@@ -134,6 +175,13 @@ export class CardShops extends Component{
 	toggle=()=> {
     this.setState({ modal: false });
  	}
+ 	toggleAdd=()=> {
+    this.setState({ modalAdd: false });
+ 	}
+ 	cancelItem=(eachItem)=>{
+ 		this.props.deleteItemFromBasket(eachItem)
+ 		this.props.cancelCardSpace()
+ 	}
 	render(){
 		console.log("cardShop",this.state,this.props)
 		var cardComparsion=(space,id) => ( 
@@ -146,6 +194,7 @@ export class CardShops extends Component{
 				<Table borderless hover responsive>
 			        <thead>
 			          <tr>
+			            <th style={{fontSize:"x-small", width:"8px"}}></th>
 			          	<th style={{fontSize:"x-small"}}>Quantity</th>
 			            <th style={{fontSize:"x-small"}}>Product</th>
 			            <th style={{fontSize:"x-small"}}>Unit</th>
@@ -153,11 +202,12 @@ export class CardShops extends Component{
 			          </tr>
 			        </thead>
 			        <tbody>
-			        	{this.state.basket.map((eachItem)=>{
+			        	{this.props.superMarket.basket.map((eachItem)=>{
 			        		const priceOfItem = space.item[eachItem.item_id].price
 			        		const total = (parseFloat(eachItem.quantity)*parseFloat(priceOfItem)).toFixed(2)
 			        		return(
 			        			<tr>
+			        				<img src={cancel} align="right" width="8px" onClick={this.cancelItem.bind(this,eachItem)} id={id}/>
 			        				<td style={{fontSize:"x-small", padding:"4px"}}>{eachItem.quantity}</td>
 			        				<td style={{fontSize:"x-small", padding:"4px"}}>{eachItem.reference}</td>
 			        				<td style={{fontSize:"x-small", padding:"3px"}}>$ {priceOfItem}</td>
@@ -166,9 +216,10 @@ export class CardShops extends Component{
 			        			)
 			        	})}
 			        	<tr>
+			        		<td style={{width:"8px"}}></td>
 			        		<td>Total</td>
 			        		<td></td>
-			        		<td COLSPAN={2} style={{padding:"10.5px 0px"}}>$ {this.totalBasket(this.state.basket,space)}</td>
+			        		<td colSpan={2} style={{padding:"10.5px 0px"}}>$ {this.totalBasket(this.props.superMarket.basket,space)}</td>
 			        	</tr>
 			        </tbody>
 			    </Table>
@@ -180,7 +231,23 @@ export class CardShops extends Component{
 			</Card>
 		return(
 			<React.Fragment>
-				<Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+				<Modal isOpen={this.state.modalAdd} toggle={this.toggleAdd} className={this.props.className}>
+          			<ModalHeader toggle={this.toggleAdd}>You must remove the following items</ModalHeader>
+          			<ModalBody>
+            				<Table borderless hover responsive>
+				          		<tbody>
+				          			{this.state.notInShop.map((item)=>{
+				          				return(
+					          				<tr>
+				        						<td>{item}</td>
+				        					</tr>
+			        					)
+				          			})}
+				          		</tbody>	
+            				</Table>
+         	 		</ModalBody>
+        		</Modal>
+        		<Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
           			<ModalBody>
             			You can only select 3 shops to compare
          	 		</ModalBody>
@@ -204,11 +271,13 @@ export class CardShops extends Component{
 
 CardShops.propTypes = {
 	getSuperMarkets:PropTypes.func.isRequired,
-	superMarket:PropTypes.object.isRequired
+	superMarket:PropTypes.object.isRequired,
+	deleteItemFromBasket:PropTypes.func.isRequired,
+	addItemToBasket:PropTypes.func.isRequired,
 }
 const mapStateToProps = (state)=>({
 	superMarket:state.superMarket
 })
 
-export default connect(mapStateToProps,{getSuperMarkets}) (CardShops)
+export default connect(mapStateToProps,{getSuperMarkets,deleteItemFromBasket,addItemToBasket}) (CardShops)
 

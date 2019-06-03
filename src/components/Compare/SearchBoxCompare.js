@@ -31,6 +31,7 @@ export  class SearchBoxCompare extends Component {
     		this.setState({
     			value:"",
     			emptySearchBox:false})
+    		this.props.notEmptySearchBox()
     	}if(prevProps.space!==this.props.space){
             source = this.sourceForList(this.props.space)
         }
@@ -55,6 +56,7 @@ export  class SearchBoxCompare extends Component {
         return res;
         }, []);
         const finalResult = grocery_sampleJSON.filter((item)=>result.indexOf(item.item_id)>=0)
+        console.log(grocery_sampleJSON.filter((item)=>result.indexOf(item.item_id)===-1))
         return finalResult
     }
   handleSearchChange = (e, { value }) => {

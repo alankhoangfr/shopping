@@ -1,17 +1,21 @@
 import React, {Component} from "react"
 import {CardText,Table,CardTitle,CardSubtitle,Card,Container, Row,Col,CardImg,CardBody} from 'reactstrap';
 import CBasket from "../../image/CBasket.png"
-
+import {getSuperMarkets,deleteItemFromBasket,addItemToBasket} from "../../actions/SuperMarketActions"
+import {connect} from "react-redux"
+import PropTypes from "prop-types"
 
 export class Basket extends Component{
 	constructor(props){
 		super(props)
 		this.state={
-			basket:[],
 			itemOnDrag:"",			
 
 		}
 	}
+	componentDidMount(){
+        this.props.getSuperMarkets()
+    }
 	shouldComponenntUpdate(nextProps,nextState){
 		if(this.props.itemOnDrag!==nextProps.itemOnDrag){
 			return true
@@ -40,8 +44,7 @@ export class Basket extends Component{
 			console.log("onDropasdf")
 			document.getElementById("cardBasket").style.opacity="1"
 			document.getElementById("cardBasket").style.backgroundColor="inherit"
-			this.setState({basket:[...this.state.basket,this.state.itemOnDrag]})
-			this.props.basket([...this.state.basket,this.state.itemOnDrag])
+			this.props.addItemToBasket(this.state.itemOnDrag)
 		}
 		
 	}
@@ -72,4 +75,16 @@ export class Basket extends Component{
 	}
 }
 
-export default Basket
+
+Basket.propTypes = {
+    getSuperMarkets:PropTypes.func.isRequired,
+    superMarket:PropTypes.object.isRequired,
+    deleteItemFromBasket:PropTypes.func.isRequired,
+    addItemToBasket:PropTypes.func.isRequired,
+}
+const mapStateToProps = (state)=>({
+    superMarket:state.superMarket
+})
+
+export default connect(mapStateToProps,{getSuperMarkets,deleteItemFromBasket,addItemToBasket}) (Basket)
+

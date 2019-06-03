@@ -1,23 +1,25 @@
 import React, {Component} from "react"
 import SearchShop from "./SearchShop"
 import ItemDisplay from "./Compare/ItemDisplay"
-import {CardText,Table,CardTitle,CardSubtitle,Card,Container, Row,Col,CardImg,CardBody} from 'reactstrap';
+import {CardText,Table,CardTitle,CardSubtitle,Card,Container, Row,Col,CardImg,CardBody,Button} from 'reactstrap';
 import CBasket from "../image/CBasket.png"
 import CardShops from "./Compare/CardShops"
 import Basket from "./Compare/Basket"
+import GenerateData from "./Compare/GenerateData"
+import RemoveAllBasket	 from "./Compare/RemoveAllBasket"
 
 export class CompareBasket extends Component{
 	constructor(props){
 		super(props)
 		this.state={
 			supermarket_selected:"",
-			basket:[],
 			itemOnDrag:"",
 			shopSelectedCompare:"",	
 			allSpace:true,
 			space:[]
 		}
 	}
+
 	shouldComponentUpdate(nextState,nextProps){
 		if(this.props.allSpace!==nextProps.allSpace){
 			return true
@@ -25,9 +27,6 @@ export class CompareBasket extends Component{
 	}
 	itemOnDrag=(result)=>{
 		this.setState({itemOnDrag:result})
-	}
-	basket = (basket)=>{
-		this.setState({basket:basket})
 	}
 	supermarket_selected=(markerObject)=>{
 		this.setState({supermarket_selected:markerObject})
@@ -46,15 +45,18 @@ export class CompareBasket extends Component{
 	cancelCardSpace=()=>{
 		this.setState({shopSelectedCompare:""})
 	}
+
 	render(){
 		console.log(this.state)
 		let shopSelected = 
-			<ItemDisplay
-				supermarket_selected={this.state.supermarket_selected}
-				itemOnDrag={this.itemOnDrag}
-				basket={this.basket}
-				space={this.state.space}
-			/>
+			<div>
+				<RemoveAllBasket/>
+				<ItemDisplay
+					supermarket_selected={this.state.supermarket_selected}
+					itemOnDrag={this.itemOnDrag}
+					space={this.state.space}
+				/>
+			</div>
 		if(this.state.allSpace===true){shopSelected=null}
 		return (
 			<React.Fragment>
@@ -64,18 +66,18 @@ export class CompareBasket extends Component{
 					compareBasket={true}
 					shopSelectedCompare={this.shopSelectedCompare}
 					/>
+				
 				<Container style={{marginTop:"50px"}}>
 					<Row>
 						<Col sm={3}  style={{zIndex:"1"}}>
+							<GenerateData/>
 							<Basket
-								itemOnDrag={this.state.itemOnDrag}
-								basket={this.basket}/>
+								itemOnDrag={this.state.itemOnDrag}/>
 							{shopSelected}
 						</Col>		
 					<CardShops
 						shopSelectedCompare={this.state.shopSelectedCompare}
 						allSpace={this.allSpace}
-						basket={this.state.basket}
 						cancelCardSpace={this.cancelCardSpace}/>
 					</Row>
 				</Container>
@@ -84,5 +86,6 @@ export class CompareBasket extends Component{
 	}
 }
 
-export default CompareBasket
 
+
+export default CompareBasket
