@@ -86,6 +86,9 @@ export class MapAddShop extends Component {
 			console.log("new shops")
 			return true
 		}
+		else if(this.props.centerMarker!==nextProps.centerMarker){
+			return true
+		}
 		else if (this.check_markers1(nextState.markers1,this.state.markers1)===true){
 			console.log("no change")
 			return false
@@ -108,6 +111,11 @@ export class MapAddShop extends Component {
 					lng: this.props.center.lng
 				},
 				markers1:markers1 ,
+			})
+		}
+		else if(this.props.centerMarker!==prevProps.centerMarker){
+			this.setState({
+				markerPosition:this.state.movePosition	
 			})
 		}
 		else{

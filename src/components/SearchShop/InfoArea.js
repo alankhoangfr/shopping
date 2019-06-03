@@ -1,22 +1,32 @@
 import React, {Component} from "react"
 import { ListGroup, ListGroupItem,ListGroupItemText,ListGroupItemHeading} from 'reactstrap';
+import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col } from 'reactstrap';
 import add from "../../image/add.png"
-
+import classnames from 'classnames';
 export class InfoArea extends Component {
 	constructor(props){
 		super(props)
 		this.state={
 			markerHighlighted:"",
-			markerSelected:this.props.markerSelected
+			markerSelected:this.props.markerSelected,
+			activeTab: '1',
 		}
 	}
 	componentDidUpdate(prevProps){
 		if(this.props.markerSelected!==prevProps.markerSelected){
+			this.toggle('2')
 			this.setState({
 				markerSelected:this.props.markerSelected,
 				markerHighlighted:""})
 		}
 	}
+	toggle(tab) {
+    if (this.state.activeTab !== tab) {
+      this.setState({
+        activeTab: tab
+      });
+    }
+  	}
 	onclickMarker = (markerObject,event) =>{
 		console.log(markerObject)
 		this.setState({markerHighlighted:markerObject.id})
@@ -24,6 +34,7 @@ export class InfoArea extends Component {
 	onDoubleClick = (markerObject)=>{
 		this.setState({markerSelected:markerObject})
 		this.props.shopSelected(markerObject)
+		this.toggle('2')
 
 	}
 	onClickAdd=(markerObject,event)=>{
@@ -64,7 +75,7 @@ export class InfoArea extends Component {
 				</ListGroupItemHeading>
 				<ListGroupItemText>
 					{markerObject.address}
-					{this.props.compareBasket===true?<img src={add} align="right" onClick={this.onClickAdd.bind(this,markerObject)}/>:null}
+					{this.props.compareBasket===true&&this.state.markerSelected!==""?<img src={add} align="right" onClick={this.onClickAdd.bind(this,markerObject)}/>:null}
 				</ListGroupItemText>
 				<ListGroupItemText>
 					{markerObject.score}
@@ -78,9 +89,8 @@ export class InfoArea extends Component {
 	}
 	render() {
 	console.log(this.props,this.state)
-	let info
 	let infoall =  
-				<div style={{border:"1px solid black", height:"438px", overflowY: "scroll"}}>
+				<div style={{border:"1px solid black", height:"400px", overflowY: "scroll"}}>
 					<div >
 						<h2> Stores in the area </h2>
 					</div>
@@ -89,21 +99,42 @@ export class InfoArea extends Component {
 					</ListGroup>
 				</div>
 	let infoFocus =
-				<div style={{border:"1px solid black", height:"438px", overflowY: "scroll"}}>
+				<div style={{border:"1px solid black", height:"400px", overflowY: "scroll"}}>
 					{this.focusOnMarker(this.state.markerSelected)}
 				</div>
-				
-	if (this.state.markerSelected===""){
-		info = infoall
-	}else if(this.state.markerSelected!==""){
-		info = 	infoFocus
-	}		
-	
 	return (
 		<React.Fragment>
-		<div style={{height: '62px'}}>
-		</div>
-			{info}
+			<div style={{height: '62px'}}>
+			</div>
+			 <div>
+        <Nav tabs>
+          <NavItem>
+            <NavLink
+              className={classnames({ active: this.state.activeTab === '1' })}
+              onClick={() => { this.toggle('1'); }}
+            >
+              All the Shops in the Area
+            </NavLink>
+          </NavItem>
+          {this.state.markerSelected!==""?<NavItem>
+            <NavLink
+              className={classnames({ active: this.state.activeTab === '2' })}
+              onClick={() => { this.toggle('2'); }}
+            >
+              Focus
+            </NavLink>
+          </NavItem>:null}
+        </Nav>
+        <TabContent activeTab={this.state.activeTab}>
+          <TabPane tabId="1">
+                {infoall}
+          </TabPane>
+          <TabPane tabId="2">         
+                  {infoFocus}
+          </TabPane>
+        </TabContent>
+      </div>
+		
 		</React.Fragment>	
 )
   }

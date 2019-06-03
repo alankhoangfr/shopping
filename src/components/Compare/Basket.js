@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import {CardText,Table,CardTitle,CardSubtitle,Card,Container, Row,Col,CardImg,CardBody} from 'reactstrap';
+import {CardText,Table,CardTitle,CardSubtitle,Card,Container, Row,Col,CardImg,CardBody,Modal,ModalHeader} from 'reactstrap';
 import CBasket from "../../image/CBasket.png"
 import {getSuperMarkets,deleteItemFromBasket,addItemToBasket} from "../../actions/SuperMarketActions"
 import {connect} from "react-redux"
@@ -9,8 +9,7 @@ export class Basket extends Component{
 	constructor(props){
 		super(props)
 		this.state={
-			itemOnDrag:"",			
-
+			modal: false,
 		}
 	}
 	componentDidMount(){
@@ -21,11 +20,9 @@ export class Basket extends Component{
 			return true
 		}
 	}
-	componentDidUpdate(prevProps,prevState){
-		if(this.props.itemOnDrag!==prevProps.itemOnDrag){
-			this.setState({itemOnDrag:this.props.itemOnDrag})
-		}
-	}
+	toggle=()=> {
+    this.setState({ modal: false });
+ 	}
 	ondragover=(event)=>{
 		console.log("dragover")
 		event.preventDefault()
@@ -39,12 +36,20 @@ export class Basket extends Component{
 	}
 	ondrop=(event)=>{
 		event.preventDefault();
-		console.log("onDrop",event.target)
+		console.log("onDrop",event.target,this.props.itemOnDrag.quantity)
 		if(event.target.className==="cardBasket"){
-			console.log("onDropasdf")
-			document.getElementById("cardBasket").style.opacity="1"
-			document.getElementById("cardBasket").style.backgroundColor="inherit"
-			this.props.addItemToBasket(this.state.itemOnDrag)
+			if(this.props.itemOnDrag.quantity!==""){
+				document.getElementById("cardBasket").style.opacity="1"
+				document.getElementById("cardBasket").style.backgroundColor="inherit"
+				this.props.addItemToBasket(this.props.itemOnDrag)
+			}
+			else{
+				console.log("add quantity")
+				document.getElementById("cardBasket").style.opacity = "0.4"	
+				document.getElementById("cardBasket").style.backgroundColor = "red"	
+				this.setState({modal:true})
+			}
+			
 		}
 		
 	}
@@ -59,6 +64,9 @@ export class Basket extends Component{
 		console.log(this.state)
 		return (
 			<React.Fragment>
+				<Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+          			<ModalHeader toggle={this.toggle}>How many do you want to buy?</ModalHeader>
+        		</Modal>
 				<Card body className="text-center cardBasket" id="cardBasket" 
 					onDragOver = {this.ondragover}
 					onDrop = {this.ondrop} 

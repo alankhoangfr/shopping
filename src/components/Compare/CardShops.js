@@ -12,7 +12,6 @@ export class CardShops extends Component{
 			space1:"",
 			space2:"",
 			space3:"",
-			itemOnDrag:"",
 			modal: false,
 			modalAdd:false,
 			modalAddItem:false,

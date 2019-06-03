@@ -33,6 +33,12 @@ export default function (state=initialState, action) {
 				markers:[action.payload,...state.markers],
 				[action.payload.id]:action.payload
 			}
+		case DELETE_SUPERMARKET:
+			delete state[action.payload.id]
+			return {
+				...state,
+				markers:state.markers.filter((shop)=>shop.id!==action.payload.id)
+			}	
 		case ADD_ITEMTOSHOP:
 			if(state[action.payload.superMarket_id].hasOwnProperty("item")===false){
 				return {

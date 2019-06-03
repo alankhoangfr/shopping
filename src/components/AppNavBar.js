@@ -27,7 +27,7 @@ class AppNavBar extends Component {
     	return (
       	<div>
 	        <Navbar color="light" light expand="md">
-	          <NavbarBrand href="/">Shopping Basket</NavbarBrand>
+	          <NavbarBrand >Shopping Basket</NavbarBrand>
 	          <NavbarToggler onClick={this.toggle} />
 	          <Collapse isOpen={this.state.isOpen} navbar>
 	            <Nav className="ml-auto" navbar>
@@ -36,14 +36,14 @@ class AppNavBar extends Component {
 	              </NavItem>
 	              <UncontrolledDropdown nav inNavbar>
 	                <DropdownToggle nav caret>
-	                  		Add Basket
+	                  		Add Information
 	                </DropdownToggle>
 	                <DropdownMenu right>
 	                  <DropdownItem>
 	                  	<NavLink tag={RRNavLink} exact to="/AddShops" activeClassName="active">Add Shops</NavLink>
 	                  </DropdownItem>
 	                  <DropdownItem>
-	                    <NavLink tag={RRNavLink} exact to="/AddItems" activeClassName="active">Add Items</NavLink>
+	                    <NavLink tag={RRNavLink} exact to="/AddItems" activeClassName="active">Register a Price</NavLink>
 	                  </DropdownItem>
 	                </DropdownMenu>
 	              </UncontrolledDropdown>

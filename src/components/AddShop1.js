@@ -22,6 +22,7 @@ class AddShop1 extends Component {
         markers:[],
         visible: false,
         visibleDetails: false,
+        centerMarker:false,
     }
     onDismiss= () =>{
     this.setState({ visible: false });
@@ -71,10 +72,11 @@ class AddShop1 extends Component {
     markers = (markers)=>{
         this.setState({markers:markers})
     }
-
+    centerMarker=()=>{
+       this.setState({centerMarker:!this.state.centerMarker})
+    }
 
     render(){
-
       console.log(this.state,"AddShop1")
           return (
                <div>
@@ -105,6 +107,7 @@ class AddShop1 extends Component {
                             mapCoord = {this.mapPosition}
                             markCoord = {this.markerPosition}
                             markers = {this.markers}
+                            centerMarker={this.state.centerMarker}
                             />
                         </Col>
                         <Col sm={6}>
@@ -114,6 +117,7 @@ class AddShop1 extends Component {
                                 shopSelected = {this.shopSelected}
                                 markers ={this.state.markers}
                                 markerHighlighted={this.state.markerHighlighted}
+                                centerMarker = {this.centerMarker}
                             />
                         </Col>
                     </Row>

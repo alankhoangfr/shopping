@@ -22,10 +22,6 @@ export class Map extends Component {
 				lat: this.props.center.lat,
 				lng: this.props.center.lng
 			},
-			markerPosition:{
-				lat:this.props.center.lat,
-				lng:this.props.center.lng
-			},
 			movePosition:{
 				lat:this.props.center.lat,
 				lng:this.props.center.lng		
@@ -123,10 +119,6 @@ export class Map extends Component {
 						lat: lat,
 						lng: lng
 					},
-					markerPosition: {
-						lat: lat,
-						lng: lng
-					},
 					movePosition: {
 						lat: lat,
 						lng: lng
@@ -146,10 +138,6 @@ export class Map extends Component {
 			// Set these values in the state.
 			this.setState({
 				mapPosition: {
-					lat: latValue,
-					lng: lngValue
-				},
-				markerPosition: {
 					lat: latValue,
 					lng: lngValue
 				},
@@ -264,10 +252,6 @@ export class Map extends Component {
 						onPlaceSelected={ this.onPlaceSelected }
 						types={['(regions)']}
 						placeholder={"Enter and select location"}
-					/>
-					<Marker 
-						draggable={true}
-						position={{ lat: this.state.markerPosition.lat, lng: this.state.markerPosition.lng }}
 					/>
 					<MarkerShop
 						markers1={this.state.markers1}

@@ -11,6 +11,12 @@ export const addSuperMarket = (superMarket) =>{
 		payload: superMarket
 	}
 }
+export const deleteSuperMarket = (superMarket) =>{
+	return {
+		type:DELETE_SUPERMARKET,
+		payload: superMarket
+	}
+}
 export const addItemToShop = (superMarket) =>{
 	return {
 		type:ADD_ITEMTOSHOP,

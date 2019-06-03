@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import { Col, Row, Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import { Col, Row, Button, Form, FormGroup, Label, Input, FormText,ModalHeader,Modal } from 'reactstrap';
 import {connect} from "react-redux"
 import {addSuperMarket,getSuperMarkets} from "../../actions/SuperMarketActions"
 import PropTypes from "prop-types"
@@ -19,11 +19,12 @@ class InfoShop extends Component{
 			postcode:"",
 			completeAddress	:"",
 			markerPresent:false,
+			visible: false,
+            visibleDetail: false,
 
 		}
 	}
 	componentDidMount(){
-		console.log("componentDidMount")
 		this.props.getSuperMarkets()
 	}
 	shouldComponentUpdate(nextProps,nextState){
@@ -50,7 +51,12 @@ class InfoShop extends Component{
 			})
 		}
 	}
-
+    toggle= () =>{
+    this.setState({ visible: false });
+      }
+    toggleDetail= () =>{
+    this.setState({ visibleDetail: false });
+      }
 	onChange = ( event ) => {
   		this.setState({ [event.target.name]: event.target.value });
  	};
@@ -85,13 +91,21 @@ class InfoShop extends Component{
 					completeAddress	:address,
     			}
     			this.props.addSuperMarket(newMarker)
-    			this.props.markerInfoFromAddress(newMarker)}
+    			this.props.markerInfoFromAddress(newMarker)
+    			this.setState({
+    				name:"",
+					address: '',
+					city: '',
+					state: '',
+					postcode:"",
+    			})}
+
     			 )
  		}else if (match.every((mark)=>{return mark===false})===false){ 
- 			this.props.openAlert()
+ 			this.setState({visible:true})
  			return null
  		}else if (reg>=0){
- 			this.props.openAlertDetails()
+ 			this.setState({visibleDetail:true})
  			return null
  		}
  		
@@ -99,7 +113,13 @@ class InfoShop extends Component{
 	render(){
 		console.log(this.state)
 		return(
-
+		<React.Fragment>
+		<Modal  color="danger" isOpen={this.state.visible} fade={false} toggle={this.toggle} >
+          <ModalHeader toggle={this.toggle}>You already have added a supermaket with the same address and name!</ModalHeader>
+        </Modal>
+        <Modal  color="danger" isOpen={this.state.visibleDetail} fade={false} toggle={this.toggleDetail}>
+          <ModalHeader toggle={this.toggleDetail}>Please enter the details correctly</ModalHeader>
+        </Modal>
 		<Form onSubmit={this.onSubmit} style={{marginTop:"20px"}} >
 			<Row form>
 				<Col md={12}>
@@ -137,7 +157,7 @@ class InfoShop extends Component{
 			</Row>
 			<Button>Add Supermarket</Button>
 		</Form>
-
+		</React.Fragment>
 
 		)
 	}
