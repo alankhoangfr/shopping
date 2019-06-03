@@ -34,7 +34,6 @@ export class AddItem extends Component{
 		if(this.state.supermarket_selected===""){shopSelected=null}
 		return (
 			<React.Fragment>
-
 				<SearchShop
 					supermarket_selected={this.supermarket_selected}
 					fromAddItem = {true}

@@ -32,7 +32,7 @@ export class Map extends Component {
 			},
 			map:null,
 			markers1:[],
-			zoom:10,
+			zoom:11,
 			moving:false,
 			maploading:false,
 		}

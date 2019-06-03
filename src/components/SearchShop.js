@@ -44,7 +44,7 @@ class SearchShop extends Component {
 					      	<Map
 						    center={{lat: -33.78, lng: 151.2}}
 						    height='500px'
-						    zoom={8}
+						    zoom={10}
 						    markerSelected = {this.markerSelected}
 						    markersInBound = {this.markersInBound}
 						    shopSelected = {this.state.shopSelected}
