@@ -15,6 +15,7 @@ export class CardShops extends Component{
 			itemOnDrag:"",
 			modal: false,
 			modalAdd:false,
+			modalAddItem:false,
 			notInShop:[],
 			
 		}
@@ -61,64 +62,68 @@ export class CardShops extends Component{
 	shopSelectedCompare=(markerObject)=>{
 		const {space1,space2,space3} = this.state
 		const basket = this.props.superMarket.basket
-		if (space1===""&&space2===""&&space3===""){
+		if(this.props.superMarket[markerObject.id].item===undefined){
+			this.setState({modalAddItem:true})
+		}else{
+			if (space1===""&&space2===""&&space3===""){
 			this.setState({space1:this.props.superMarket[markerObject.id]})
-		}else if(space2===""&&space3===""){
-			if(space1.id!==markerObject.id){
-				if(basket.length===0){
-					this.setState({space2:this.props.superMarket[markerObject.id]})
-				}else{
-					var count = 0
-					var notInShop=[]
-					var itemInShop = Object.keys(this.props.superMarket[markerObject.id].item)
-					for(var i =0;i<basket.length;i++){
-						var itemInBasket = basket[i]
-						console.log(itemInBasket)
-						if(itemInShop.indexOf(itemInBasket.item_id)>=0)
-							{count++}
-						else if(itemInShop.indexOf(itemInBasket.item_id)===-1)
-							{notInShop.push(itemInBasket.title)}
-					}if(count!==basket.length){
-						console.log("modalAdd",count,basket,itemInShop)
-						console.log(notInShop)
-						this.setState({
-							modalAdd:true,
-							notInShop:notInShop})
-					}else{
+			}else if(space2===""&&space3===""){
+				if(space1.id!==markerObject.id){
+					if(basket.length===0){
 						this.setState({space2:this.props.superMarket[markerObject.id]})
-					}
-				}
-			}
-		}else if(space3===""){
-			const insideTheSpace = [space1.id,space2.id]
-			if (insideTheSpace.indexOf(markerObject.id)===-1){
-				if(basket.length===0){
-					this.setState({space3:this.props.superMarket[markerObject.id]})
-				}else{
-					var count = 0
-					var notInShop=[]
-					var itemInShop = Object.keys(this.props.superMarket[markerObject.id].item)
-					for(var i =0;i<basket.length;i++){
-						var itemInBasket = basket[i]
-						console.log(itemInBasket)
-						if(itemInShop.indexOf(itemInBasket.item_id)>=0)
-							{count++}
-						else if(itemInShop.indexOf(itemInBasket.item_id)===-1)
-							{notInShop.push(itemInBasket.title)}
-					}if(count!==basket.length){
-						console.log("modalAdd",count,basket,itemInShop)
-						console.log(notInShop)
-						this.setState({
-							modalAdd:true,
-							notInShop:notInShop})
 					}else{
-						this.setState({space3:this.props.superMarket[markerObject.id]})
+						var count = 0
+						var notInShop=[]
+						var itemInShop = Object.keys(this.props.superMarket[markerObject.id].item)
+						for(var i =0;i<basket.length;i++){
+							var itemInBasket = basket[i]
+							console.log(itemInBasket)
+							if(itemInShop.indexOf(itemInBasket.item_id)>=0)
+								{count++}
+							else if(itemInShop.indexOf(itemInBasket.item_id)===-1)
+								{notInShop.push(itemInBasket.title)}
+						}if(count!==basket.length){
+							console.log("modalAdd",count,basket,itemInShop)
+							console.log(notInShop)
+							this.setState({
+								modalAdd:true,
+								notInShop:notInShop})
+						}else{
+							this.setState({space2:this.props.superMarket[markerObject.id]})
+						}
 					}
 				}
-			}		
+			}else if(space3===""){
+				const insideTheSpace = [space1.id,space2.id]
+				if (insideTheSpace.indexOf(markerObject.id)===-1){
+					if(basket.length===0){
+						this.setState({space3:this.props.superMarket[markerObject.id]})
+					}else{
+						var count = 0
+						var notInShop=[]
+						var itemInShop = Object.keys(this.props.superMarket[markerObject.id].item)
+						for(var i =0;i<basket.length;i++){
+							var itemInBasket = basket[i]
+							console.log(itemInBasket)
+							if(itemInShop.indexOf(itemInBasket.item_id)>=0)
+								{count++}
+							else if(itemInShop.indexOf(itemInBasket.item_id)===-1)
+								{notInShop.push(itemInBasket.title)}
+						}if(count!==basket.length){
+							console.log("modalAdd",count,basket,itemInShop)
+							console.log(notInShop)
+							this.setState({
+								modalAdd:true,
+								notInShop:notInShop})
+						}else{
+							this.setState({space3:this.props.superMarket[markerObject.id]})
+						}
+					}
+				}		
 			}else{
 				this.setState({modal:true})
-		    }
+			}
+		}	
 	}
 	cancel=(event)=>{
 		const {space1,space2,space3} = this.state
@@ -178,6 +183,9 @@ export class CardShops extends Component{
  	toggleAdd=()=> {
     this.setState({ modalAdd: false });
  	}
+ 	toggleAddItem=()=> {
+    this.setState({ modalAddItem: false });
+ 	}
  	cancelItem=(eachItem)=>{
  		this.props.deleteItemFromBasket(eachItem)
  		this.props.cancelCardSpace()
@@ -231,6 +239,9 @@ export class CardShops extends Component{
 			</Card>
 		return(
 			<React.Fragment>
+				<Modal isOpen={this.state.modalAddItem} toggle={this.toggleAddItem} className={this.props.className}>
+          			<ModalHeader toggle={this.toggleAddItem}>You must add/generate items to the shop</ModalHeader>
+        		</Modal>
 				<Modal isOpen={this.state.modalAdd} toggle={this.toggleAdd} className={this.props.className}>
           			<ModalHeader toggle={this.toggleAdd}>You must remove the following items</ModalHeader>
           			<ModalBody>
