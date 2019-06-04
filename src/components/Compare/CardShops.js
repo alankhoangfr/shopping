@@ -125,6 +125,7 @@ export class CardShops extends Component{
 				}		
 			}else{
 				this.setState({modal:true})
+				this.props.cancelCardSpace()
 			}
 		}	
 	}
