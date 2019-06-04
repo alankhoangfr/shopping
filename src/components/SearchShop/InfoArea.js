@@ -3,21 +3,28 @@ import { ListGroup, ListGroupItem,ListGroupItemText,ListGroupItemHeading} from '
 import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col } from 'reactstrap';
 import add from "../../image/add.png"
 import classnames from 'classnames';
+import {connect} from "react-redux"
+import {getSuperMarkets,changeMarkerSelected} from "../../actions/SuperMarketActions"
+import PropTypes from "prop-types"
+
+
 export class InfoArea extends Component {
 	constructor(props){
 		super(props)
 		this.state={
 			markerHighlighted:"",
-			markerSelected:this.props.markerSelected,
 			activeTab: '1',
 		}
 	}
+	componentDidMount(){
+		this.props.getSuperMarkets()
+
+	}
 	componentDidUpdate(prevProps){
-		if(this.props.markerSelected!==prevProps.markerSelected){
+		if(this.props.superMarket.markerSelected!==prevProps.superMarket.markerSelected){
 			this.toggle('2')
 			this.setState({
-				markerSelected:this.props.markerSelected,
-				markerHighlighted:""})
+				markerHighlighted:this.props.superMarket.markerSelected.id})
 		}
 	}
 	toggle(tab) {
@@ -28,18 +35,15 @@ export class InfoArea extends Component {
     }
   	}
 	onclickMarker = (markerObject,event) =>{
-		console.log(markerObject)
 		this.setState({markerHighlighted:markerObject.id})
 	}
 	onDoubleClick = (markerObject)=>{
-		this.setState({markerSelected:markerObject})
-		this.props.shopSelected(markerObject)
+		this.props.changeMarkerSelected(markerObject)
 		this.toggle('2')
 
 	}
 	onClickAdd=(markerObject,event)=>{
 		this.props.shopSelectedCompare(markerObject	)
-		console.log("click add")
 	}
 	markersInBound = (markers)=>{
 		return markers.map((markerObject)=>{
@@ -75,7 +79,7 @@ export class InfoArea extends Component {
 				</ListGroupItemHeading>
 				<ListGroupItemText>
 					{markerObject.address}
-					{this.props.compareBasket===true&&this.state.markerSelected!==""?<img src={add} align="right" onClick={this.onClickAdd.bind(this,markerObject)}/>:null}
+					{this.props.compareBasket===true&&this.props.superMarket.markerSelected!==null?<img src={add} align="right" onClick={this.onClickAdd.bind(this,markerObject)}/>:null}
 				</ListGroupItemText>
 				<ListGroupItemText>
 					{markerObject.score}
@@ -100,7 +104,7 @@ export class InfoArea extends Component {
 				</div>
 	let infoFocus =
 				<div style={{border:"1px solid black", height:"400px", overflowY: "scroll"}}>
-					{this.focusOnMarker(this.state.markerSelected)}
+					{this.props.superMarket.markerSelected!==null?this.focusOnMarker(this.props.superMarket.markerSelected):null}
 				</div>
 	return (
 		<React.Fragment>
@@ -116,7 +120,7 @@ export class InfoArea extends Component {
               All the Shops in the Area
             </NavLink>
           </NavItem>
-          {this.state.markerSelected!==""?<NavItem>
+          {this.props.superMarket.markerSelected!==null?<NavItem>
             <NavLink
               className={classnames({ active: this.state.activeTab === '2' })}
               onClick={() => { this.toggle('2'); }}
@@ -140,5 +144,15 @@ export class InfoArea extends Component {
   }
 }
 
-export default InfoArea
 
+InfoArea.propTypes = {
+	getSuperMarkets:PropTypes.func.isRequired,
+	superMarket:PropTypes.object.isRequired,
+	changeMarkerSelected:PropTypes.func.isRequired,
+}
+
+const mapStateToProps = (state)=>({
+	superMarket:state.superMarket
+})
+
+export default connect(mapStateToProps,{getSuperMarkets,changeMarkerSelected})(InfoArea)

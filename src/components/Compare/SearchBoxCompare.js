@@ -17,7 +17,6 @@ export  class SearchBoxCompare extends Component {
          if(this.props.supermarket_selected!==nextProps.supermarket_selected	){
 			return true
 		}if(nextProps.emptySearchBox===true){
-			console.log("clear search box")
 			return true
 		}if(this.props.space!==nextProps.space){
             return true
@@ -27,7 +26,6 @@ export  class SearchBoxCompare extends Component {
     	if(prevProps.supermarket_selected!==this.props.supermarket_selected	){
     		this.setState({value:""})
     	}if(this.props.emptySearchBox!==prevProps.emptySearchBox){
-    		console.log("clear search box")
     		this.setState({
     			value:"",
     			emptySearchBox:false})
@@ -48,7 +46,6 @@ export  class SearchBoxCompare extends Component {
                 arrays.push(list_items)
             }
         })
-        console.log(arrays)
         var result = arrays.shift().reduce(function(res, v) {
             if (res.indexOf(v) === -1 && arrays.every(function(a) {
                 return a.indexOf(v) !== -1;

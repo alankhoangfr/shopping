@@ -2,32 +2,25 @@ import React, { Component } from 'react';
 import basket from "../../image/basket.png"
 import basketSelected from "../../image/basketSelected.png"
 import { Marker,InfoWindow  } from "react-google-maps";
+import {connect} from "react-redux"
+import {getSuperMarkets,changeMarkerSelected} from "../../actions/SuperMarketActions"
+import PropTypes from "prop-types"
 
 export class MarkerShop extends Component {
 	constructor(props){
 		super(props)
-		this.state={
-			markerSelected:"",
-			currentlySelected:"",
-		}
+	}
+	componentDidMount(){
+		this.props.getSuperMarkets()
+
 	}
 	shouldComponentUpdate(nextProps, nextState){
 		console.log("markerShop ShouldCOmponentUpdate",nextProps,this.props)
-		if(this.props.shopSelected !==nextProps.shopSelected){
-			console.log("new marker selected")
-			return true
-		}else if(this.props.markerSelected===nextProps.markerSelected){
+		if(this.props.superMarket.markerSelected!==nextProps.superMarket.markerSelected){
 			console.log("marker clicked")
 			return true	
 		}else{
 			return false	
-		}
-	}
-	componentDidUpdate(prevProps, prevState, snapshot){
-		console.log("markerShop componentDidUpdate",prevProps,this.props)
-		if(this.props.shopSelected !==prevProps.shopSelected){
-			console.log("marker clicked")
-			this.setState({currentlySelected:true})
 		}
 	}
 	onDblClick = (marker,event)=>{	
@@ -35,28 +28,19 @@ export class MarkerShop extends Component {
 			return mark.id=== marker
 		})
 		markerObject = markerObject[0]
-		this.props.markerSelected(markerObject)
-		this.setState({
-			markerSelected:markerObject.id,
-			currentlySelected:true})
+		this.props.changeMarkerSelected(markerObject)
 	} 
 	iconBasket = (marker)=>{
-		let selected 
-		if(this.props.shopSelected===""||this.state.currentlySelected===true){
-			selected=this.state.markerSelected
-		}else{
-			selected=this.props.shopSelected.id
-		}
-		let icon
-		if (selected===marker.id){
+		let icon = basket
+		if(this.props.superMarket.markerSelected!==null){
+			if (this.props.superMarket.markerSelected.id===marker.id){
 				icon = basketSelected
-			}else{
-				icon = basket
 			}
+		}
+		
 		return icon	
 	}	  		
 	render(){
-		console.log("markershop",this.props,this.state)
 		return(
 			this.props.markers1.map((marker) => {				
 			return( 
@@ -80,4 +64,15 @@ export class MarkerShop extends Component {
 	}
 
 
-export default MarkerShop
+
+MarkerShop.propTypes = {
+	getSuperMarkets:PropTypes.func.isRequired,
+	superMarket:PropTypes.object.isRequired,
+	changeMarkerSelected:PropTypes.func.isRequired,
+}
+
+const mapStateToProps = (state)=>({
+	superMarket:state.superMarket
+})
+
+export default connect(mapStateToProps,{getSuperMarkets,changeMarkerSelected})(MarkerShop)

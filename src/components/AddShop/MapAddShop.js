@@ -4,7 +4,7 @@ import Geocode from "react-geocode"
 import Autocomplete from 'react-google-autocomplete';
 import uuid from "uuid"
 import {connect} from "react-redux"
-import {getSuperMarkets} from "../../actions/SuperMarketActions"
+import {getSuperMarkets,changeMarkerSelected} from "../../actions/SuperMarketActions"
 import MarkerShop from "../SearchShop/MarkerShop"
 import PropTypes from "prop-types"
 
@@ -43,13 +43,10 @@ export class MapAddShop extends Component {
 		}
 	}
 	componentDidMount(){
-		console.log("componentDidMount")
 		this.props.getSuperMarkets()
 		this.updating_marker()
-
 	}
 	updating_marker = ()=>{
-		console.log("updating marker>")
 		if (this.state.moving===true){
 			var markers1 = this.insideBound_bound(this.props.superMarket.markers,this.state.bound)
 			this.setState({
@@ -78,11 +75,7 @@ export class MapAddShop extends Component {
 			console.log("change position")
 			return true
 		}
-		else if(nextProps.shopSelected !== this.props.shopSelected){
-			console.log("new marker selected")
-			return true
-		}
-		else if(nextProps.superMarket!==this.props.superMarket){
+		else if(nextProps.superMarket.markers!==this.props.superMarket.markers){
 			console.log("new shops")
 			return true
 		}
@@ -95,11 +88,7 @@ export class MapAddShop extends Component {
 		}
 	}
 	componentDidUpdate(prevProps, prevState, snapshot){
-		console.log("componentDidUpdate",prevState,this.state,prevProps,this.props,snapshot)
-		if(this.props.shopSelected!==prevProps.shopSelected){
-			return null
-		}else if(prevProps.superMarket!==this.props.superMarket){
-			console.log("go to new marker coord")
+		if(prevProps.superMarket.markers!==this.props.superMarket.markers){
 			var markers1 = this.insideBound(this.props.superMarket.markers,this.state.markerPosition)
 			this.setState({
 				mapPosition	:{
@@ -120,7 +109,6 @@ export class MapAddShop extends Component {
 		}
 		else{
 			this.updating_marker()
-			this.props.markers(this.props.superMarket)
 		}
 
 	}
@@ -180,7 +168,6 @@ export class MapAddShop extends Component {
         }
     };
     onMarkerDragEnd = ( event ) => {
-        console.log( 'event', event );
         let newLat = event.latLng.lat(),
         newLng = event.latLng.lng(),
         addressArray = [];
@@ -237,12 +224,10 @@ export class MapAddShop extends Component {
 			{return false}
 		}
 	onPlaceSelected = ( place,event ) => {
-		console.log(place)
 		if (place.name!==undefined){
 			Geocode.fromAddress(place.name).then(
 				response => {
     			const { lat, lng } = response.results[0].geometry.location
-    			console.log(lat, lng)
     			var markers1 = this.insideBound(this.props.superMarket.markers,response.results[0].geometry.location)
     			if (lat ===undefined){
     				return null
@@ -292,11 +277,10 @@ export class MapAddShop extends Component {
 				moving:false,
 			})
 		}
-	this.props.markerSelected("")
+	this.props.changeMarkerSelected(null)
 	return
 	};
 	mapmoved=()=>{
-		console.log("mapMoved:"+JSON.stringify(this.state.map.getBounds()))
 		var markers1 = this.insideBound_bound(this.props.superMarket.markers,JSON.stringify(this.state.map.getBounds()))
 		this.setState({
 			bound:JSON.stringify(this.state.map.getBounds()),
@@ -313,7 +297,6 @@ export class MapAddShop extends Component {
 		})
 	}
 	maploaded=(mapRef)=>{
-		console.log("maploaded")
 		if(!mapRef){
 			return
 		}
@@ -322,7 +305,6 @@ export class MapAddShop extends Component {
 			maploading:true})	
 	}
 	onZoom = ()=>{
-		console.log("zoom:"+this.state.map.getCenter(),this.state.map.getZoom())
 		var markers1 = this.insideBound_bound(this.props.superMarket.markers,JSON.stringify(this.state.map.getBounds()))
 		this.setState({
 			bound:JSON.stringify(this.state.map.getBounds()),
@@ -346,7 +328,6 @@ export class MapAddShop extends Component {
 				if (shop.lat>center.lat-0.2 && shop.lat<center.lat+0.2 && shop.lng>center.lng-0.2 && shop.lng<center.lng+0.2){
 					result.push(shop)}	
 			})
-			console.log(result,"lets look center",center,shops)	
 			this.props.markersInBound(result)		
 			return result			
 		}else{return []}		
@@ -358,20 +339,14 @@ export class MapAddShop extends Component {
 			shops.map((shop)=>{
 				if (shop.lat>bound.south && shop.lat<bound.north && shop.lng>bound.west && shop.lng<bound.east){
 					result.push(shop)}	
-			})
-			console.log(result,"lets look bound",bound,shops)		
+			})	
 			this.props.markersInBound(result)		
 			return result			
 		}else{return []}
 	}
-	markerSelected =(markerObject)=>{
-		this.props.markerSelected(markerObject)
-	}
+
 	
-	render() {
-	console.log(this.state,"rendering state")
-	console.log(this.props,"rendering props")
-	
+	render() {	
 	const AsyncMap = withScriptjs(
 		withGoogleMap(
 			props => (
@@ -400,9 +375,7 @@ export class MapAddShop extends Component {
 						position={{ lat: this.state.markerPosition.lat, lng: this.state.markerPosition.lng }}
 					/>
 					<MarkerShop
-						markers1={this.state.markers1}
-						markerSelected = {this.markerSelected}
-						shopSelected = {this.props.shopSelected}/>
+						markers1={this.state.markers1}/>
 				</GoogleMap>
 			)
 		)
@@ -435,11 +408,12 @@ export class MapAddShop extends Component {
 
 MapAddShop.propTypes = {
 	getSuperMarkets:PropTypes.func.isRequired,
-	superMarket:PropTypes.object.isRequired
+	superMarket:PropTypes.object.isRequired,
+	changeMarkerSelected:PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state)=>({
 	superMarket:state.superMarket
 })
 
-export default connect(mapStateToProps,{getSuperMarkets})(MapAddShop)
+export default connect(mapStateToProps,{getSuperMarkets,changeMarkerSelected})(MapAddShop)

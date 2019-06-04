@@ -3,13 +3,14 @@ import { Container, Row,Col,Alert  } from 'reactstrap';
 import InfoShop from "./AddShop/InfoShop"
 import InfoAreaAddShop from "./AddShop/InfoAreaAddShop"
 import MapAddShop from "./AddShop/MapAddShop"
+import {connect} from "react-redux"
+import {getSuperMarkets,changeMarkerSelected} from "../actions/SuperMarketActions"
+import PropTypes from "prop-types"
 
 class AddShop1 extends Component {
     state ={
-        markerSelected :"",
         markerHighlighted:"",
         markersInBound:[],
-        shopSelected:"",
         markerPosition:{
             lat:-33.865143,
             lng: 151.209900
@@ -20,42 +21,24 @@ class AddShop1 extends Component {
                 lng: 151.209900
             },
         markers:[],
-        visible: false,
-        visibleDetails: false,
         centerMarker:false,
     }
-    onDismiss= () =>{
-    this.setState({ visible: false });
-      }
-    openAlert= () =>{
-    this.setState({ visible: true });
-      }
-    onDismissDetails= () =>{
-    this.setState({ visibleDetails: false });
-      }
-    openAlertDetails= () =>{
-    this.setState({ visibleDetails: true });
-      }
-    markerSelected=(markerObject)=>{
-      this.setState({markerSelected:markerObject})  }
+    componentDidMount(){
+        this.props.getSuperMarkets()
+    }
     markersInBound = (markers)=>{
       this.setState({markersInBound:markers})
-    }
-    shopSelected = (markerObject)=>{
-      this.setState({shopSelected:markerObject})
     }
     markerPosition=(center)=>{
     this.setState({markerPosition:center})
     }
     markerInfoMap  = (newMarkerObject)=>{
-        console.log("new info added")
     this.setState({
         markerInfo:newMarkerObject,
 
     })
     }
     markerInfoFromAddress = (newMarkerObject)=>{
-        console.log("new info added")
     this.setState({
         markerInfo:newMarkerObject,
         shopSelected:newMarkerObject,
@@ -65,27 +48,19 @@ class AddShop1 extends Component {
             lng:newMarkerObject.lng
             },
     })
+    this.props.changeMarkerSelected(newMarkerObject)
     }
     mapPosition  = (center)=>{
     this.setState({mapPosition:center})
     }
-    markers = (markers)=>{
-        this.setState({markers:markers})
-    }
+
     centerMarker=()=>{
        this.setState({centerMarker:!this.state.centerMarker})
     }
 
     render(){
-      console.log(this.state,"AddShop1")
           return (
                <div>
-                <Alert color="danger" isOpen={this.state.visible} toggle={this.onDismiss}>
-                    You already have added a supermaket with the same address and name!
-                </Alert>
-                <Alert color="danger" isOpen={this.state.visibleDetails} toggle={this.onDismissDetails}>
-                    Please enter the details correctly
-                </Alert>
                 <Container>
                     <div className="title">
                         <h1>
@@ -100,22 +75,16 @@ class AddShop1 extends Component {
                             height='500px'
                             zoom={8}
                             markerInfo = {this.state.markerInfo}
-                            markerSelected = {this.markerSelected}
                             markersInBound = {this.markersInBound}
-                            shopSelected = {this.state.shopSelected}      
                             markerInfoMap={this.markerInfoMap}
                             mapCoord = {this.mapPosition}
                             markCoord = {this.markerPosition}
-                            markers = {this.markers}
                             centerMarker={this.state.centerMarker}
                             />
                         </Col>
                         <Col sm={6}>
                             <InfoAreaAddShop
-                                markerSelected  ={this.state.markerSelected}
                                 markersInBound  ={this.state.markersInBound}
-                                shopSelected = {this.shopSelected}
-                                markers ={this.state.markers}
                                 markerHighlighted={this.state.markerHighlighted}
                                 centerMarker = {this.centerMarker}
                             />
@@ -133,8 +102,6 @@ class AddShop1 extends Component {
                                 markerInfo = {this.state.markerInfo}
                                 mapPosition ={this.mapPosition}
                                 markerInfoFromAddress = {this.markerInfoFromAddress}  
-                                openAlert = {this.openAlert}  
-                                openAlertDetails = {this.openAlertDetails} 
                                 />
                         </Col>
                     </Row>
@@ -148,7 +115,14 @@ class AddShop1 extends Component {
     }
 
     }
+AddShop1.propTypes = {
+    getSuperMarkets:PropTypes.func.isRequired,
+    superMarket:PropTypes.object.isRequired,
+    changeMarkerSelected:PropTypes.func.isRequired    
+}
 
-export default AddShop1;
+const mapStateToProps = (state)=>({
+    superMarket:state.superMarket
+})
 
-
+export default connect(mapStateToProps,{getSuperMarkets,changeMarkerSelected})(AddShop1)

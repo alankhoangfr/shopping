@@ -28,8 +28,6 @@ class SearchShop extends Component {
 		this.props.shopSelectedCompare(markerObject	)
 	} 
 	render(){
-
-  	console.log(this.state,"SearchShop")
   		return (
    			<div>
 			    <Container>

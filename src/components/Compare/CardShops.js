@@ -16,13 +16,13 @@ export class CardShops extends Component{
 			modalAdd:false,
 			modalAddItem:false,
 			notInShop:[],
-			
 		}
 	}
 	componentDidMount(){
 		this.props.getSuperMarkets()
 	}
 	shouldComponenntUpdate(nextProps,nextState){
+		console.log("cardshop",nextProps,this.props,nextState,this.state)
 		const {nspace1,nspace2,nspace3} = nextState
 		const {space1,space2,space3} = this.state
 		const spaces =[space1,space2,space3]
@@ -30,9 +30,9 @@ export class CardShops extends Component{
 		console.log("cardshop ShouldComponentUpdate",nextProps)
 		if(this.props.shopSelectedCompare!==nextProps.shopSelectedCompare){
 			return true
-		}if(nspaces!==spaces){
+		}else if(nspaces!==spaces){
 			return true
-		}if(this.props.superMarket.basket!==nextProps.superMarket.basket){
+		}else if(this.props.superMarket.basket!==nextProps.superMarket.basket){
 			return true
 		}
 	}
@@ -47,15 +47,14 @@ export class CardShops extends Component{
 		if(this.props.shopSelectedCompare===""){
 			return null
 		}
-		if(this.props.shopSelectedCompare!==prevProps.shopSelectedCompare){
-			this.shopSelectedCompare(this.props.shopSelectedCompare)
-			
-		}if(pspaces!==spaces){
+		if(pspaces!==spaces){
 			if(numberOfNon.length===0){
 				this.props.allSpace({nonVisible:true,space:numberOfNon})
 			}else{
 				this.props.allSpace({nonVisible:false,space:numberOfNon})
 			}
+		}if(this.props.shopSelectedCompare!==prevProps.shopSelectedCompare){
+			this.shopSelectedCompare(this.props.shopSelectedCompare)
 		}
 	}
 	shopSelectedCompare=(markerObject)=>{
@@ -63,6 +62,7 @@ export class CardShops extends Component{
 		const basket = this.props.superMarket.basket
 		if(this.props.superMarket[markerObject.id].item===undefined){
 			this.setState({modalAddItem:true})
+			this.props.cancelCardSpace()
 		}else{
 			if (space1===""&&space2===""&&space3===""){
 			this.setState({space1:this.props.superMarket[markerObject.id]})
@@ -86,7 +86,9 @@ export class CardShops extends Component{
 							console.log(notInShop)
 							this.setState({
 								modalAdd:true,
-								notInShop:notInShop})
+								notInShop:notInShop,
+								})
+							this.props.cancelCardSpace()
 						}else{
 							this.setState({space2:this.props.superMarket[markerObject.id]})
 						}
@@ -113,7 +115,9 @@ export class CardShops extends Component{
 							console.log(notInShop)
 							this.setState({
 								modalAdd:true,
-								notInShop:notInShop})
+								notInShop:notInShop,
+								})
+							this.props.cancelCardSpace()
 						}else{
 							this.setState({space3:this.props.superMarket[markerObject.id]})
 						}
@@ -147,9 +151,7 @@ export class CardShops extends Component{
 				}
 			}
 		}
-		console.log("cancel",numberOfNon.length,i)
 		if(numberOfNon.length!==i){
-			console.log("reorder")
 			for(var i=0; i<numberOfNon.length;i++){
 				console.log(spaces_text[i],"good")
 				this.setState({[spaces_text[i]]:numberOfNon[i]})

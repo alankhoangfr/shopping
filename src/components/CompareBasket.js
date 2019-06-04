@@ -19,12 +19,6 @@ export class CompareBasket extends Component{
 			space:[]
 		}
 	}
-
-	shouldComponentUpdate(nextState,nextProps){
-		if(this.props.allSpace!==nextProps.allSpace){
-			return true
-		}
-	}
 	itemOnDrag=(result)=>{
 		this.setState({itemOnDrag:result})
 	}
@@ -32,7 +26,6 @@ export class CompareBasket extends Component{
 		this.setState({supermarket_selected:markerObject})
 	}
 	shopSelectedCompare=(markerObject)=>{
-		console.log("good")
 		this.setState({shopSelectedCompare:markerObject})
 	}
 
@@ -47,7 +40,6 @@ export class CompareBasket extends Component{
 	}
 
 	render(){
-		console.log(this.state)
 		let shopSelected = 
 			<div>
 				<RemoveAllBasket/>

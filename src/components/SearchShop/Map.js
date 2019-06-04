@@ -4,7 +4,7 @@ import Geocode from "react-geocode"
 import Autocomplete from 'react-google-autocomplete';
 import uuid from "uuid"
 import {connect} from "react-redux"
-import {getSuperMarkets} from "../../actions/SuperMarketActions"
+import {getSuperMarkets,changeMarkerSelected} from "../../actions/SuperMarketActions"
 import MarkerShop from "./MarkerShop"
 import PropTypes from "prop-types"
 
@@ -34,13 +34,11 @@ export class Map extends Component {
 		}
 	}
 	componentDidMount(){
-		console.log("componentDidMount")
 		this.props.getSuperMarkets()
 		this.updating_marker()
 
 	}
 	updating_marker = ()=>{
-		console.log("updating marker>")
 		if (this.state.moving===true){
 			var markers1 = this.insideBound_bound(this.props.superMarket.markers,this.state.bound)
 			this.setState({
@@ -73,7 +71,7 @@ export class Map extends Component {
 		}
 		else if(nextProps.shopSelected !== this.props.shopSelected){
 			console.log("new marker selected")
-			return true
+			return false
 		}
 		else if (this.check_markers1(nextState.markers1,this.state.markers1)===true){
 			console.log("no change")
@@ -81,12 +79,8 @@ export class Map extends Component {
 		}
 	}
 	componentDidUpdate(prevProps, prevState, snapshot){
-		console.log("componentDidUpdate",prevState,this.state,prevProps,this.props,snapshot)
-		if(this.props.shopSelected!==prevProps.shopSelected){
-			return null
-		}else{
-			this.updating_marker()
-		}
+		console.log("componentDidUpdate",prevState,this.state,prevProps,this.props)
+		this.updating_marker()
 
 	}
 	check_markers1=(array1,array2) => {
@@ -104,12 +98,10 @@ export class Map extends Component {
 			{return false}
 		}
 	onPlaceSelected = ( place,event ) => {
-		console.log(place)
 		if (place.name!==undefined){
 			Geocode.fromAddress(place.name).then(
 				response => {
     			const { lat, lng } = response.results[0].geometry.location
-    			console.log(lat, lng)
     			var markers1 = this.insideBound(this.props.superMarket.markers,response.results[0].geometry.location)
     			if (lat ===undefined){
     				return null
@@ -151,11 +143,10 @@ export class Map extends Component {
 				moving:false,
 			})
 		}
-	this.props.markerSelected("")
+	this.props.changeMarkerSelected(null)
 	return
 	};
 	mapmoved=()=>{
-		console.log("mapMoved:"+JSON.stringify(this.state.map.getBounds()))
 		var markers1 = this.insideBound_bound(this.props.superMarket.markers,JSON.stringify(this.state.map.getBounds()))
 		this.setState({
 			bound:JSON.stringify(this.state.map.getBounds()),
@@ -172,7 +163,6 @@ export class Map extends Component {
 		})
 	}
 	maploaded=(mapRef)=>{
-		console.log("maploaded")
 		if(!mapRef){
 			return
 		}
@@ -181,7 +171,6 @@ export class Map extends Component {
 			maploading:true})	
 	}
 	onZoom = ()=>{
-		console.log("zoom:"+this.state.map.getCenter(),this.state.map.getZoom())
 		var markers1 = this.insideBound_bound(this.props.superMarket.markers,JSON.stringify(this.state.map.getBounds()))
 		this.setState({
 			bound:JSON.stringify(this.state.map.getBounds()),
@@ -205,7 +194,6 @@ export class Map extends Component {
 				if (shop.lat>center.lat-0.2 && shop.lat<center.lat+0.2 && shop.lng>center.lng-0.2 && shop.lng<center.lng+0.2){
 					result.push(shop)}	
 			})
-			console.log(result,"lets look center",center,shops)	
 			this.props.markersInBound(result)		
 			return result			
 		}else{return []}		
@@ -217,20 +205,13 @@ export class Map extends Component {
 			shops.map((shop)=>{
 				if (shop.lat>bound.south && shop.lat<bound.north && shop.lng>bound.west && shop.lng<bound.east){
 					result.push(shop)}	
-			})
-			console.log(result,"lets look bound",bound,shops)		
+			})		
 			this.props.markersInBound(result)		
 			return result			
 		}else{return []}
 	}
-	markerSelected =(markerObject)=>{
-		this.props.markerSelected(markerObject)
-	}
 	
-	render() {
-	console.log(this.state,"rendering state")
-	console.log(this.props,"rendering props")
-	
+	render() {	
 	const AsyncMap = withScriptjs(
 		withGoogleMap(
 			props => (
@@ -254,9 +235,7 @@ export class Map extends Component {
 						placeholder={"Enter and select location"}
 					/>
 					<MarkerShop
-						markers1={this.state.markers1}
-						markerSelected = {this.markerSelected}
-						shopSelected = {this.props.shopSelected}/>
+						markers1={this.state.markers1}/>
 				</GoogleMap>
 			)
 		)
@@ -289,11 +268,12 @@ export class Map extends Component {
 
 Map.propTypes = {
 	getSuperMarkets:PropTypes.func.isRequired,
-	superMarket:PropTypes.object.isRequired
+	superMarket:PropTypes.object.isRequired,
+	changeMarkerSelected:PropTypes.func.isRequired	
 }
 
 const mapStateToProps = (state)=>({
 	superMarket:state.superMarket
 })
 
-export default connect(mapStateToProps,{getSuperMarkets})(Map)
+export default connect(mapStateToProps,{getSuperMarkets,changeMarkerSelected})(Map)

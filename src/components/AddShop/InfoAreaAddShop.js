@@ -3,7 +3,7 @@ import { ListGroup, ListGroupItem,ListGroupItemText,ListGroupItemHeading} from '
 import classnames from 'classnames';
 import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col } from 'reactstrap';
 import {connect} from "react-redux"
-import {deleteSuperMarket} from "../../actions/SuperMarketActions"
+import {deleteSuperMarket,changeMarkerSelected,getSuperMarkets} from "../../actions/SuperMarketActions"
 import PropTypes from "prop-types"
 import cancel from "../../image/cancel.png"
 
@@ -12,7 +12,6 @@ export class InfoAreaAddShop extends Component {
 		super(props)
 		this.state={
 			markerHighlighted:"",
-			markerSelected:this.props.markerSelected,
 			activeTab: '1',
 		}
 	}
@@ -27,19 +26,12 @@ export class InfoAreaAddShop extends Component {
 	}
 
 	componentDidUpdate(prevProps,prevState){
-		if(this.props.markerSelected!==prevProps.markerSelected){
-			this.toggle('2')
+		if(this.props.superMarket.markerSelected!==prevProps.superMarket.markerSelected&&this.props.superMarket.markers===prevProps.superMarket.markers){		
+			this.toggle('1')
 			this.setState({
-				markerSelected:this.props.markerSelected,
-				markerHighlighted:""})
-		}if (this.props.markers!==prevProps.markers){
-			this.setState({
-				markerSelected:"",
-				markerHighlighted:this.props.markerSelected.id
-			})
+				markerHighlighted:this.props.superMarket.markerSelected.id})
 		}if(this.props.markerHighlighted!==prevProps.markerHighlighted){
 			this.setState({
-				markerSelected:"",
 				markerHighlighted:this.props.markerHighlighted.id
 			})
 		}
@@ -52,12 +44,10 @@ export class InfoAreaAddShop extends Component {
     }
   	}
 	onclickMarker = (marker,event) =>{
-		console.log(marker)
 		this.setState({markerHighlighted:marker.id})
 	}
 	onDoubleClick = (markerObject)=>{
-		this.setState({markerSelected:markerObject})
-		this.props.shopSelected(markerObject)
+		this.props.changeMarkerSelected(markerObject)
 		this.toggle('2')
 
 	}
@@ -114,7 +104,6 @@ export class InfoAreaAddShop extends Component {
 		this.props.deleteSuperMarket(marker)
 	}
 	render() {
-	console.log(this.props,this.state)
 	let infoall =  
 				<div style={{border:"1px solid black", height:"400px", overflowY: "scroll"}}>
 					<div >
@@ -126,7 +115,7 @@ export class InfoAreaAddShop extends Component {
 				</div>
 	let infoFocus =
 				<div style={{border:"1px solid black", height:"400px", overflowY: "scroll"}}>
-					{this.focusOnMarker(this.state.markerSelected)}
+					{this.props.superMarket.markerSelected!==null?this.focusOnMarker(this.props.superMarket.markerSelected):null}
 				</div>
 	return (
 		<React.Fragment>
@@ -142,7 +131,7 @@ export class InfoAreaAddShop extends Component {
               All the Shops in the Area
             </NavLink>
           </NavItem>
-          {this.state.markerSelected!==""?<NavItem>
+          {this.props.superMarket.markerSelected!==null?<NavItem>
             <NavLink
               className={classnames({ active: this.state.activeTab === '2' })}
               onClick={() => { this.toggle('2'); }}
@@ -174,13 +163,14 @@ export class InfoAreaAddShop extends Component {
 }
 
 InfoAreaAddShop.propTypes = {
+	getSuperMarkets:PropTypes.func.isRequired,
 	deleteSuperMarket:PropTypes.func.isRequired,
-
+	changeMarkerSelected:PropTypes.func.isRequired,	
 }
 
 const mapStateToProps = (state)=>({
 	superMarket:state.superMarket
 })
 
-export default connect(mapStateToProps,{deleteSuperMarket})(InfoAreaAddShop)
+export default connect(mapStateToProps,{deleteSuperMarket,changeMarkerSelected,getSuperMarkets})(InfoAreaAddShop)
 

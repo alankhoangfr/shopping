@@ -1,4 +1,4 @@
-import{GET_SUPERMARKETS, ADD_SUPERMARKET, DELETE_SUPERMARKET,ADD_ITEMTOSHOP,ADD_ITEMTOBASKET,DELETE_ALLFROMBASKET,DELETE_ITEMFROMBASKET} from "./types"
+import{GET_SUPERMARKETS, ADD_SUPERMARKET, DELETE_SUPERMARKET,ADD_ITEMTOSHOP,ADD_ITEMTOBASKET,DELETE_ALLFROMBASKET,DELETE_ITEMFROMBASKET,CHANGE_MARKERSELECTED} from "./types"
 
 export const getSuperMarkets = () =>{
 	return {
@@ -17,26 +17,32 @@ export const deleteSuperMarket = (superMarket) =>{
 		payload: superMarket
 	}
 }
-export const addItemToShop = (superMarket) =>{
+export const addItemToShop = (item) =>{
 	return {
 		type:ADD_ITEMTOSHOP,
-		payload: superMarket
+		payload: item
 	}
 }
-export const addItemToBasket = (superMarket) =>{
+export const addItemToBasket = (item) =>{
 	return {
 		type:ADD_ITEMTOBASKET,
-		payload: superMarket
+		payload: item
 	}
 }
-export const deleteItemFromBasket = (superMarket) =>{
+export const deleteItemFromBasket = (item) =>{
 	return {
 		type:DELETE_ITEMFROMBASKET,
-		payload: superMarket
+		payload: item
 	}
 }
-export const deleteAllBasket = (superMarket) =>{
+export const deleteAllBasket = (basket) =>{
 	return {
 		type:DELETE_ALLFROMBASKET,
+	}
+}
+export const changeMarkerSelected = (supermarket)=>{
+	return{
+		type:CHANGE_MARKERSELECTED,
+		payload:supermarket
 	}
 }

@@ -12,7 +12,6 @@ export  class SearchBox extends Component {
          if(this.props.supermarket_selected!==nextProps.supermarket_selected	){
 			return true
 		}if(nextProps.emptySearchBox===true){
-			console.log("clear search box")
 			return true
 		}
     }
@@ -20,7 +19,6 @@ export  class SearchBox extends Component {
     	if(prevProps.supermarket_selected!==this.props.supermarket_selected	){
     		this.setState({value:""})
     	}if(this.props.emptySearchBox!==prevProps.emptySearchBox){
-    		console.log("clear search box")
     		this.setState({
     			value:"",
     			emptySearchBox:false})

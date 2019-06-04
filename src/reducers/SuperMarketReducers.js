@@ -1,5 +1,5 @@
 import uuid from "uuid"
-import {GET_SUPERMARKETS,ADD_SUPERMARKET,DELETE_SUPERMARKET,ADD_ITEMTOSHOP,ADD_ITEMTOBASKET,DELETE_ITEMFROMBASKET,DELETE_ALLFROMBASKET} from '../actions/types';
+import {GET_SUPERMARKETS,ADD_SUPERMARKET,DELETE_SUPERMARKET,ADD_ITEMTOSHOP,ADD_ITEMTOBASKET,DELETE_ITEMFROMBASKET,DELETE_ALLFROMBASKET,CHANGE_MARKERSELECTED} from '../actions/types';
 
 const initialState ={
 	markers:[
@@ -10,6 +10,7 @@ const initialState ={
 		{id: 3,lat: -34.08779579999999,lng: 150.7909654,name: "Shop 3",address: "3 Gargery Street",score: "",details: "",city: "Ambarvale",state: "NSW",
 		postcode: "2560",completeAddress: "3 Gargery Street Ambarvale NSW 2560"},
 	],
+	markerSelected:null,
 	basket:[],
 	1:{id: 1,lat: -33.8959144,lng: 151.0984299,name: "Shop 1",address: "26 Stanley Street",score: "",details: "",city: "Croydon Park",state: "NSW",
 		postcode: "2133",completeAddress: "26 Stanley Street Croydon Park NSW 2133"},
@@ -66,6 +67,11 @@ export default function (state=initialState, action) {
 			return {
 				...state,
 				basket:[]
+			}
+		case CHANGE_MARKERSELECTED:
+			return {
+				...state,
+				markerSelected:action.payload
 			}
 		default:
 		 return state

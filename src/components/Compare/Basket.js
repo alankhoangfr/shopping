@@ -24,11 +24,9 @@ export class Basket extends Component{
     this.setState({ modal: false });
  	}
 	ondragover=(event)=>{
-		console.log("dragover")
 		event.preventDefault()
 	}
 	ondragenter=(event)=>{
-		console.log("drag enter",event.target)
 		if(event.target.className==="cardBasket"){
 			document.getElementById("cardBasket").style.opacity = "0.4"	
 			document.getElementById("cardBasket").style.backgroundColor = "green"	
@@ -44,7 +42,6 @@ export class Basket extends Component{
 				this.props.addItemToBasket(this.props.itemOnDrag)
 			}
 			else{
-				console.log("add quantity")
 				document.getElementById("cardBasket").style.opacity = "0.4"	
 				document.getElementById("cardBasket").style.backgroundColor = "red"	
 				this.setState({modal:true})
@@ -58,10 +55,8 @@ export class Basket extends Component{
 			event.target.style.opacity="1"
 			event.target.style.backgroundColor="inherit"
 		}
-		console.log("onDragLeave")
 	}
 	render(){
-		console.log(this.state)
 		return (
 			<React.Fragment>
 				<Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>

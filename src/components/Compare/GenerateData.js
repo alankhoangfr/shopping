@@ -32,7 +32,6 @@ export class GenerateData extends React.Component {
         }
     }
     componentDidUpdate(prevProps){
-        console.log(prevProps,this.props,this.state)
         if(prevProps.superMarket.markers!==this.props.superMarket.markers){
             this.setState({visible:true})
         }

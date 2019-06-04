@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import { Col, Row, Button, Form, FormGroup, Label, Input, FormText,ModalHeader,Modal } from 'reactstrap';
 import {connect} from "react-redux"
-import {addSuperMarket,getSuperMarkets} from "../../actions/SuperMarketActions"
+import {addSuperMarket,getSuperMarkets,changeMarkerSelected} from "../../actions/SuperMarketActions"
 import PropTypes from "prop-types"
 import Geocode from "react-geocode";
 import uuid from "uuid"
@@ -40,7 +40,6 @@ class InfoShop extends Component{
 	}
 	componentDidUpdate(prevProps){
 		if (this.props.markerInfo.completeAddress!==prevProps.markerInfo.completeAddress){
-			console.log("componentDidUpdate",prevProps,this.props)
 			this.setState({
 				address:this.props.markerInfo.address,
 				city:this.props.markerInfo.city,
@@ -76,7 +75,6 @@ class InfoShop extends Component{
     			const { lat, lng } = response.results[0].geometry.location
     			this.props.markerPosition({lat:lat,lng:lng})
     			this.props.mapPosition({lat:lat,lng:lng})
-    			console.log(lat,lng)
     			const newMarker ={
     				id:uuid(),
     				lat:lat,
@@ -90,6 +88,7 @@ class InfoShop extends Component{
 					postcode:this.state.postcode,
 					completeAddress	:address,
     			}
+    			this.props.changeMarkerSelected(newMarker)
     			this.props.addSuperMarket(newMarker)
     			this.props.markerInfoFromAddress(newMarker)
     			this.setState({
@@ -111,7 +110,6 @@ class InfoShop extends Component{
  		
  	}
 	render(){
-		console.log(this.state)
 		return(
 		<React.Fragment>
 		<Modal  color="danger" isOpen={this.state.visible} fade={false} toggle={this.toggle} >
@@ -168,12 +166,13 @@ class InfoShop extends Component{
 InfoShop.propTypes = {
 	addSuperMarket:PropTypes.func.isRequired,
 	getSuperMarkets:PropTypes.func.isRequired,
-	superMarket:PropTypes.object.isRequired
+	superMarket:PropTypes.object.isRequired,
+	changeMarkerSelected:PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state)=>({
 	superMarket:state.superMarket
 })
 
-export default connect(mapStateToProps,{getSuperMarkets,addSuperMarket})(InfoShop)
+export default connect(mapStateToProps,{getSuperMarkets,addSuperMarket,changeMarkerSelected})(InfoShop)
 
