@@ -1,0 +1,1 @@
+{"version":3,"sources":["App.css"],"names":[],"mappings":"AAAA,0CAEI,WAAa,YAAe,CAEhC","file":"main.cb4e5b44.chunk.css","sourcesContent":["@media only screen and (min-width : 1200px) {\r\n\r\n    .container { width: 1500px; } \r\n\r\n}"]}
