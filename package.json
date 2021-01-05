@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "https://alankhoangfr.github.io/shopping/",
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "bootstrap": "^4.3.1",
     "cleave.js": "^1.5.0",
     "csv": "^5.1.1",
